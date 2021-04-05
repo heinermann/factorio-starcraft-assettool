@@ -1,3 +1,9 @@
 [submodule "CascLib"]
 	path = CascLib
 	url = https://github.com/ladislav-zezula/CascLib.git
+[submodule "CImg"]
+	path = CImg
+	url = https://github.com/dtschump/CImg.git
+[submodule "simple-dds-image-reader"]
+	path = simple-dds-image-reader
+	url = https://github.com/juho-p/simple-dds-image-reader.git

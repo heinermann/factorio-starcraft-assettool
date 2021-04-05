@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Third Party">
+      <UniqueIdentifier>{82145ed5-ff6f-4528-87f8-a6bdcd94c92a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -21,10 +24,31 @@
     <ClCompile Include="image_predefs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="anim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="convert.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\simple-dds-image-reader\ddsreader.cpp">
+      <Filter>Third Party</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="image_predefs.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="anim.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CImg\CImg.h">
+      <Filter>Third Party</Filter>
+    </ClInclude>
+    <ClInclude Include="convert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\simple-dds-image-reader\ddsreader.hpp">
+      <Filter>Third Party</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

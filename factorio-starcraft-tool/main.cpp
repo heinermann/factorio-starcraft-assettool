@@ -5,6 +5,9 @@
 
 #include <CascLib.h>
 
+#include "convert.h"
+#include "image_predefs.h"
+
 HANDLE open_casc_storage(const std::string& install_dir) {
   HANDLE hCasc = nullptr;
   if (!CascOpenStorage(install_dir.c_str(), 0, &hCasc)) {
@@ -59,4 +62,6 @@ int main(int argc, const char** argv) {
   
   std::ofstream of("main_000.anim", std::ios::binary);
   of.write(reinterpret_cast<const char*>(test.data()), test.size());
+
+  convert_anim(test, image_predefs[0]);
 }

@@ -151,6 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\simple-dds-image-reader\ddsreader.cpp" />
+    <ClCompile Include="anim.cpp" />
+    <ClCompile Include="convert.cpp" />
     <ClCompile Include="image_predefs.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -160,6 +163,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\CImg\CImg.h" />
+    <ClInclude Include="..\simple-dds-image-reader\ddsreader.hpp" />
+    <ClInclude Include="anim.h" />
+    <ClInclude Include="convert.h" />
     <ClInclude Include="image_predefs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
