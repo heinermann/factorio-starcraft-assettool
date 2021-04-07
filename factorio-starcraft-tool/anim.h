@@ -4,11 +4,13 @@
 #include <vector>
 #include <unordered_map>
 
+#include "../CImg/CImg.h"
+
 // Copy of struct from lib
-struct dds_img_t {
-  std::vector<uint8_t> data;
-  int width, height, bpp;
-};
+//struct dds_img_t {
+//  std::vector<uint8_t> data;
+//  int width, height, bpp;
+//};
 
 // ----- .anim File Data -----
 typedef struct {
@@ -70,7 +72,7 @@ typedef struct {
   std::uint32_t width;      // grp width
   std::uint32_t height;     // grp height
 
-  std::unordered_map<std::string, dds_img_t> data;
+  std::unordered_map<std::string, cimg_library::CImg<std::uint8_t>> sheets;
 
   std::vector<frame_t> framedata;
 } anim_t;

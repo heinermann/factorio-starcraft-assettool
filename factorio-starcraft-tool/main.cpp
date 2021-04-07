@@ -2,6 +2,7 @@
 #include <fstream>
 #include <filesystem>
 #include <vector>
+#include <chrono>
 
 #include <CascLib.h>
 
@@ -53,6 +54,8 @@ int main(int argc, const char** argv) {
     std::cerr << "Requires an argument - StarCraft: Remastered installation directory." << std::endl;
     return 1;
   }
+
+  auto clock_start = std::chrono::steady_clock::now();
   
   HANDLE hCasc = open_casc_storage(argv[1]);
   if (hCasc == nullptr) return 2;
@@ -62,6 +65,10 @@ int main(int argc, const char** argv) {
   
   std::ofstream of("main_000.anim", std::ios::binary);
   of.write(reinterpret_cast<const char*>(test.data()), test.size());
+  of.close();
 
   convert_anim(test, image_predefs[0]);
+
+  auto clock_end = std::chrono::steady_clock::now();
+  std::cerr << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock_end - clock_start).count() << "ms" << std::endl;
 }

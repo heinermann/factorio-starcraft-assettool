@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "../simple-dds-image-reader/ddsreader.hpp"
+#include "../CImg/CImg.h"
 
 #define TEST(x) if(!(x)) throw std::exception(#x)
 
@@ -43,6 +44,13 @@ anim_t loadAnim(const std::vector<std::uint8_t>& data) {
 
   // Load DDS files
   for (int i = 0; i < header->layers; ++i) {
+    // Skip the ones we don't care about
+    if (std::strncmp(header->layernames[i], "diffuse", 32) != 0 &&
+      std::strncmp(header->layernames[i], "teamcolor", 32) != 0 &&
+      std::strncmp(header->layernames[i], "emissive", 32) != 0) {
+      continue;
+    }
+
     const anim_img_t& img = entry->imgs[i];
     if (img.ptr == 0) continue;
 
@@ -54,10 +62,9 @@ anim_t loadAnim(const std::vector<std::uint8_t>& data) {
     dds_work_buffer.assign(&data[img.ptr], &data[img.ptr + img.size]);
 
     Image dds = read_dds(dds_work_buffer);
-    dds_img_t dds2{ {}, dds.width, dds.height, dds.bpp };
-    dds2.data.swap(dds.data); // avoid copy
+    cimg_library::CImg<std::uint8_t> cimg{ dds.data.data(), unsigned(dds.width), unsigned(dds.height), 1, 4 };
 
-    result.data.emplace(header->layernames[i], dds2);
+    result.sheets.emplace(header->layernames[i], std::move(cimg));
   }
 
   // Load frame data
