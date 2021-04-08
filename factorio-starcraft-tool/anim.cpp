@@ -1,6 +1,7 @@
 #include "anim.h"
 
 #include <stdexcept>
+#include <cstdio>
 
 #include "../simple-dds-image-reader/ddsreader.hpp"
 #include "../CImg/CImg.h"
@@ -12,6 +13,8 @@ constexpr uint32_t MAKEFOURCC(char a, char b, char c, char d) {
 }
 
 constexpr std::uint32_t ANIM_HDR = MAKEFOURCC('A', 'N', 'I', 'M');
+
+using CImg = cimg_library::CImg<std::uint8_t>;
 
 anim_t loadAnim(const std::vector<std::uint8_t>& data) {
   static std::vector<std::uint8_t> dds_work_buffer;
@@ -62,7 +65,15 @@ anim_t loadAnim(const std::vector<std::uint8_t>& data) {
     dds_work_buffer.assign(&data[img.ptr], &data[img.ptr + img.size]);
 
     Image dds = read_dds(dds_work_buffer);
-    cimg_library::CImg<std::uint8_t> cimg{ dds.data.data(), unsigned(dds.width), unsigned(dds.height), 1, 4 };
+    FILE* ftmp = std::tmpfile();
+    std::fwrite(dds.data.data(), 1, dds.data.size(), ftmp);
+    std::fseek(ftmp, 0, SEEK_SET);
+
+    CImg cimg{ unsigned(dds.width), unsigned(dds.height), 1, 4 };
+    cimg.load_rgba(ftmp, dds.width, dds.height);
+    //cimg_library::CImg<std::uint8_t> cimg{ dds.data.data(), unsigned(dds.width), unsigned(dds.height), 1, 4 };
+    //cimg.display();
+    std::fclose(ftmp);
 
     result.sheets.emplace(header->layernames[i], std::move(cimg));
   }

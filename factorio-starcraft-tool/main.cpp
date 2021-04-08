@@ -55,6 +55,11 @@ int main(int argc, const char** argv) {
     return 1;
   }
 
+#ifdef _DEBUG
+  std::cerr << "Attach debugger then press enter..." << std::endl;
+  std::cin.ignore();
+#endif
+
   auto clock_start = std::chrono::steady_clock::now();
   
   HANDLE hCasc = open_casc_storage(argv[1]);

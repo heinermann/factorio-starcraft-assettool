@@ -33,7 +33,9 @@ struct supplement_info_t {
 void draw_image(CImg& dst, int dst_x, int dst_y, CImg& src, int src_x, int src_y, int width, int height) {
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
-      dst(dst_x + x, dst_y + y) = src(src_x + x, src_y + y);
+      for (int c = 0; c < 4; ++c) {
+        dst(dst_x + x, dst_y + y, 0, c) = src(src_x + x, src_y + y, 0, c);
+      }
     }
   }
 }
@@ -45,7 +47,9 @@ void draw_image(CImg& dst, int dst_x, int dst_y, CImg& src, const frame_t& src_f
 void draw_image_flipped(CImg& dst, int dst_x, int dst_y, CImg& src, int src_x, int src_y, int width, int height) {
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
-      dst(dst_x + x, dst_y + y) = src(src_x + width - 1 - x, src_y + height - 1 - y);
+      for (int c = 0; c < 4; ++c) {
+        dst(dst_x + x, dst_y + y, 0, c) = src(src_x + width - 1 - x, src_y + height - 1 - y, 0, c);
+      }
     }
   }
 }
@@ -53,7 +57,7 @@ void draw_image_flipped(CImg& dst, int dst_x, int dst_y, CImg& src, int src_x, i
 void BGRAtoRGBA(CImg& img) {
   for (int y = 0; y < img.height(); ++y) {
     for (int x = 0; x < img.width(); ++x) {
-      std::swap(img(x, y, 1, 0), img(x, y, 1, 2));
+      std::swap(img(x, y, 0, 0), img(x, y, 0, 2));
     }
   }
 }
@@ -61,11 +65,31 @@ void BGRAtoRGBA(CImg& img) {
 void mask_to_black(CImg& img) {
   for (int y = 0; y < img.height(); ++y) {
     for (int x = 0; x < img.width(); ++x) {
-      img(x, y, 1, 0) = 0;
-      img(x, y, 1, 1) = 0;
-      img(x, y, 1, 2) = 0;
+      img(x, y, 0, 0) = 0;
+      img(x, y, 0, 1) = 0;
+      img(x, y, 0, 2) = 0;
+      //img(x, y, 0, 3) = img(x, y, 0, 3) ? 255 : 0; // outputs should have transparency still
     }
   }
+}
+
+// Zeroing out transparent pixels saves a lot of space on diffuse gfx
+void zero_out_transparent(CImg& img) {
+  for (int y = 0; y < img.height(); ++y) {
+    for (int x = 0; x < img.width(); ++x) {
+      if (img(x, y, 0, 3) == 0) {
+        img(x, y, 0, 0) = 0;
+        img(x, y, 0, 1) = 0;
+        img(x, y, 0, 2) = 0;
+      }
+    }
+  }
+}
+
+void display(const CImg& img) {
+  CImg render(img.width(), img.height(), 1, 3, 0);
+  render.draw_image(img, img.get_channel(3), 1, 255);
+  render.display();
 }
 
 supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_info_t& img_info) {
@@ -98,10 +122,10 @@ supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_
   result.using_turns = img_info.gfx_turns;
   if (result.using_turns) {
     result.num_frames_without_turns = result.framecount / 17;
-    result.num_frames_extra = result.framecount - result.num_frames_without_turns;
+    result.extra_frames_index = result.num_frames_without_turns * 17;
+    result.num_frames_extra = result.framecount - result.extra_frames_index;
     result.rows_per_turn = unsigned(std::ceil(double(result.num_frames_without_turns) / result.dst_cells_per_row));
     result.rows_extra = unsigned(std::ceil(double(result.num_frames_extra) / result.dst_cells_per_row));
-    result.extra_frames_index = result.num_frames_without_turns * 17;
   }
 
   return result;
@@ -114,6 +138,7 @@ CImgList convert_to_img_list(const anim_t& anim, CImg& img, const supplement_inf
     const frame_t& frame = anim.framedata[i];
     draw_image(result(i), frame.xoffs + info.frame_offset_x, frame.yoffs + info.frame_offset_y, img, frame);
   }
+
   return result;
 }
 
@@ -132,14 +157,14 @@ CImg img_list_to_sheet(const CImgList& frames, const supplement_info_t& info) {
 
 CImg img_list_to_turns_sheet(const CImgList& frames, const supplement_info_t& info) {
   unsigned new_img_width = info.dst_cells_per_row * info.dst_frame_width;
-  unsigned new_img_height = info.rows_per_turn * info.dst_frame_height;
+  unsigned new_img_height = info.rows_per_turn * info.dst_frame_height * 32;
 
   CImg result{ new_img_width, new_img_height, 1, 4, 0 };
   for (int turn = 0; turn < 32; ++turn) {
     for (int i = 0; i < info.num_frames_without_turns; ++i) {
       int x = (i % info.dst_cells_per_row) * info.dst_frame_width;
       int y = (turn * info.rows_per_turn + i / info.dst_cells_per_row) * info.dst_frame_height;
-      result.draw_image(x, y, frames(i));
+      result.draw_image(x, y, frames(i + turn * info.num_frames_without_turns));
     }
   }
   return result;
@@ -176,7 +201,7 @@ void convert_to_gfxturns(CImgList& frames, CImgList& extras, const supplement_in
 
     // Mirror images for missing turns
     for (int turn = 17; turn < 32; ++turn) {
-      newframes(turn * info.num_frames_without_turns + i).swap(frames(i * 17 + 17 - (turn - 16)));
+      newframes(turn * info.num_frames_without_turns + i) = newframes((32 - turn) * info.num_frames_without_turns + i).get_mirror("x");
     }
   }
 
@@ -213,6 +238,7 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
   // Convert to lists
   for (auto& sheet : anim.sheets) {
     BGRAtoRGBA(sheet.second);
+
     //convert_to_uniform_sheet(anim, sheet.second, anim_info);
     CImgList frames = convert_to_img_list(anim, sheet.second, anim_info);
 
@@ -222,6 +248,13 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
 
       if (sheet.first == "diffuse") {
         CImgList shadows = create_shadows(frames, anim_info);
+        
+        supplement_info_t shadow_info = anim_info;
+        shadow_info.dst_frame_height *= 0.8;
+        shadow_info.dst_frame_width *= 1.4;
+        shadow_info.dst_cells_per_row = std::min(2048 / shadow_info.dst_frame_width, shadow_info.framecount);
+
+
         CImg shadow_sheet = img_list_to_turns_sheet(shadows, anim_info);
         output_sheets.emplace("shadow", std::move(shadow_sheet));
       }
@@ -229,8 +262,10 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
       CImg result_sheet = img_list_to_turns_sheet(frames, anim_info);
       output_sheets.emplace(sheet.first, std::move(result_sheet));
 
-      CImg extras_sheet = img_list_to_sheet(frames, anim_info);
-      output_sheets.emplace("extra_" + sheet.first, std::move(extras_sheet));
+      if (!extras.is_empty()) {
+        CImg extras_sheet = img_list_to_sheet(extras, anim_info);
+        output_sheets.emplace("extra_" + sheet.first, std::move(extras_sheet));
+      }
     }
     else {
       CImg result_sheet = img_list_to_sheet(frames, anim_info);
@@ -244,8 +279,9 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
 
   // Write output PNGs
   char filename[128];
-  for (auto& sheet : anim.sheets) {
+  for (auto& sheet : output_sheets) {
     std::snprintf(filename, 128, "main_%03d_%s.png", img_info.id, sheet.first.c_str());
+    zero_out_transparent(sheet.second);
     sheet.second.save_png(filename);
   }
 }
