@@ -27,7 +27,7 @@
     <ClCompile Include="anim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="convert.cpp">
+    <ClCompile Include="convert_anim.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\simple-dds-image-reader\ddsreader.cpp">
@@ -44,7 +44,7 @@
     <ClInclude Include="..\CImg\CImg.h">
       <Filter>Third Party</Filter>
     </ClInclude>
-    <ClInclude Include="convert.h">
+    <ClInclude Include="convert_anim.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\simple-dds-image-reader\ddsreader.hpp">

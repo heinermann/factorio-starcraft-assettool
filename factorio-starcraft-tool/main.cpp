@@ -7,7 +7,7 @@
 
 #include <CascLib.h>
 
-#include "convert.h"
+#include "convert_anim.h"
 #include "image_predefs.h"
 
 HANDLE open_casc_storage(const std::string& install_dir) {
