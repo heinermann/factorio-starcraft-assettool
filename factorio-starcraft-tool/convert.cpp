@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <cstdio>
+#include <array>
 
 #include "image_predefs.h"
 #include "anim.h"
@@ -278,10 +279,10 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
   }
 
   // Write output PNGs
-  char filename[128];
+  std::array<char, 128> filename;
   for (auto& sheet : output_sheets) {
-    std::snprintf(filename, 128, "main_%03d_%s.png", img_info.id, sheet.first.c_str());
+    std::snprintf(filename.data(), filename.size(), "main_%03d_%s.png", img_info.id, sheet.first.c_str());
     zero_out_transparent(sheet.second);
-    sheet.second.save_png(filename);
+    sheet.second.save_png(filename.data());
   }
 }

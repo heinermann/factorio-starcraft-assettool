@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <array>
 #include <vector>
 #include <chrono>
 
@@ -65,14 +66,15 @@ int main(int argc, const char** argv) {
   HANDLE hCasc = open_casc_storage(argv[1]);
   if (hCasc == nullptr) return 2;
 
-  std::vector<std::uint8_t> test;
-  get_file_data(hCasc, "anim\\main_000.anim", test);
-  
-  std::ofstream of("main_000.anim", std::ios::binary);
-  of.write(reinterpret_cast<const char*>(test.data()), test.size());
-  of.close();
+  std::array<char, 64> filename;
+  std::vector<std::uint8_t> buffer;
 
-  convert_anim(test, image_predefs[0]);
+  for (imagedat_info_t& img_def : image_predefs) {
+    std::cerr << "Converting ID " << img_def.id << "\n";
+    std::snprintf(filename.data(), filename.size(), "anim\\main_%03d.anim", img_def.id);
+    get_file_data(hCasc, filename.data(), buffer);
+    convert_anim(buffer, img_def);
+  }
 
   auto clock_end = std::chrono::steady_clock::now();
   std::cerr << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock_end - clock_start).count() << "ms" << std::endl;

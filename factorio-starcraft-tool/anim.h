@@ -6,11 +6,6 @@
 
 #include "../CImg/CImg.h"
 
-// Copy of struct from lib
-//struct dds_img_t {
-//  std::vector<uint8_t> data;
-//  int width, height, bpp;
-//};
 
 // ----- .anim File Data -----
 typedef struct {
