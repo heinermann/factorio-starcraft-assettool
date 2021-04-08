@@ -29,7 +29,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {24, false, false, false }, // Egg Remnants
   {25, false, false, true }, // Guardian
   //{26, false, true, true }, // Guardian Shadow
-  {27, false, false, false }, // Guardian Birth
+  //{27, false, false, false }, // Guardian Birth
   {28, false, false, false }, // Guardian Death
   {29, false, false, true }, // Hydralisk
   //{30, false, true, true }, // Hydralisk Shadow
@@ -92,7 +92,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {87, false, true, false }, // Nydus Canal Shadow
   {88, false, false, false }, // Overmind With Shell
   {89, false, false, false }, // Overmind Remnants
-  {90, false, false, false }, // Overmind Without Shell
+  //{90, false, false, false }, // Overmind Without Shell
   {91, false, false, false }, // Ultralisk Cavern
   {92, false, true, false }, // Ultralisk Cavern Shadow
   {93, false, false, false }, // Extractor
@@ -105,9 +105,9 @@ std::vector<imagedat_info_t> image_predefs = {
   {100, false, true, false }, // Spore Colony Shadow
   {101, false, false, false }, // Infested Command Center Overlay
   {102, false, false, false }, // Zerg Construction (Large)
-  {103, false, false, false }, // Zerg Building Morph
-  {104, false, false, false }, // Zerg Construction (Medium)
-  {105, false, false, false }, // Zerg Construction (Small)
+  //{103, false, false, false }, // Zerg Building Morph
+  //{104, false, false, false }, // Zerg Construction (Medium)
+  //{105, false, false, false }, // Zerg Construction (Small)
   {106, false, true, false }, // Zerg Building Construction Shadow
   {107, false, false, false }, // Zerg Building Spawn (Small)
   {108, false, false, false }, // Zerg Building Spawn (Medium)
@@ -146,62 +146,62 @@ std::vector<imagedat_info_t> image_predefs = {
   //{149, false, true, true }, // Observer Shadow
   {151, false, false, true }, // Zealot
   //{152, false, true, true }, // Zealot Shadow
-  {153, false, false, false }, // Zealot Death
+  //{153, false, false, false }, // Zealot Death
   {155, false, false, false }, // Templar Archives
-  {156, true, false, false }, // Templar Archives Warp Flash
+  //{156, true, false, false }, // Templar Archives Warp Flash
   {157, false, true, false }, // Templar Archives Shadow
   {158, false, false, false }, // Assimilator
-  {159, true, false, false }, // Assimilator Warp Flash
+  //{159, true, false, false }, // Assimilator Warp Flash
   {160, false, true, false }, // Assimilator Shadow
   {161, false, false, false }, // Observatory
-  {162, true, false, false }, // Observatory Warp Flash
+  //{162, true, false, false }, // Observatory Warp Flash
   {163, false, true, false }, // Observatory Shadow
   {164, false, false, false }, // Citadel of Adun
-  {165, true, false, false }, // Citadel of Adun Warp Flash
+  //{165, true, false, false }, // Citadel of Adun Warp Flash
   {166, false, true, false }, // Citadel of Adun Shadow
   {167, false, false, false }, // Forge
   {168, false, false, false }, // Forge Overlay
-  {169, true, false, false }, // Forge Warp Flash
+  //{169, true, false, false }, // Forge Warp Flash
   {170, false, true, false }, // Forge Shadow
   {171, false, false, false }, // Gateway
-  {172, true, false, false }, // Gateway Warp Flash
+  //{172, true, false, false }, // Gateway Warp Flash
   {173, false, true, false }, // Gateway Shadow
   {174, false, false, false }, // Cybernetics Core
-  {175, true, false, false }, // Cybernetics Core Warp Flash
+  //{175, true, false, false }, // Cybernetics Core Warp Flash
   {176, false, false, false }, // Cybernetics Core Overlay
   {177, false, true, false }, // Cybernetics Core Shadow
   {178, false, false, false }, // Khaydarin Crystal Formation
   {179, false, false, false }, // Nexus
-  {180, true, false, false }, // Nexus Warp Flash
+  //{180, true, false, false }, // Nexus Warp Flash
   {181, true, false, false }, // Nexus Overlay
   {182, false, true, false }, // Nexus Shadow
   {183, false, false, false }, // Photon Cannon
   {184, false, true, false }, // Photon Cannon Shadow
-  {185, true, false, false }, // Photon Cannon Warp Flash
+  //{185, true, false, false }, // Photon Cannon Warp Flash
   {186, false, false, false }, // Arbiter Tribunal
-  {187, true, false, false }, // Arbiter Tribunal Warp Flash
+  //{187, true, false, false }, // Arbiter Tribunal Warp Flash
   {188, false, true, false }, // Arbiter Tribunal Shadow
   {189, false, false, false }, // Pylon
-  {190, true, false, false }, // Pylon Warp Flash
+  //{190, true, false, false }, // Pylon Warp Flash
   {191, false, true, false }, // Pylon Shadow
   {192, false, false, false }, // Robotics Facility
-  {193, true, false, false }, // Robotics Facility Warp Flash
+  //{193, true, false, false }, // Robotics Facility Warp Flash
   {194, false, true, false }, // Robotics Facility Shadow
   {195, false, false, false }, // Shield Battery
   {196, true, false, false }, // Shield Battery Overlay
-  {197, true, false, false }, // Shileld Battery Warp Flash
+  //{197, true, false, false }, // Shileld Battery Warp Flash
   {198, false, true, false }, // Shield Battery Shadow
   {199, false, false, false }, // Stargate
   {200, true, false, false }, // Stargate Overlay
-  {201, true, false, false }, // Stargate Warp Flash
+  //{201, true, false, false }, // Stargate Warp Flash
   {202, false, true, false }, // Stargate Shadow
   {203, false, false, false }, // Stasis Cell/Prison
   {204, false, false, false }, // Robotics Support Bay
-  {205, true, false, false }, // Robotics Support Bay Warp Flash
+  //{205, true, false, false }, // Robotics Support Bay Warp Flash
   {206, false, true, false }, // Robotics Support Bay Shadow
   {207, false, false, false }, // Protoss Temple
   {208, false, false, false }, // Fleet Beacon
-  {209, true, false, false }, // Fleet Beacon Warp Flash
+  //{209, true, false, false }, // Fleet Beacon Warp Flash
   {210, true, false, false }, // Warp Texture
   {211, true, false, false }, // Warp Anchor
   {212, false, true, false }, // Fleet Beacon Shadow
@@ -223,7 +223,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {228, false, false, true }, // Ghost
   //{229, false, true, true }, // Ghost Shadow
   {230, false, false, false }, // Ghost Remnants
-  {231, false, false, false }, // Ghost Death
+  //{231, false, false, false }, // Ghost Death
   {232, true, false, true }, // Nuke Beam
   {233, true, false, false }, // Nuke Target Dot
   {234, false, false, true }, // Goliath Base
@@ -234,11 +234,11 @@ std::vector<imagedat_info_t> image_predefs = {
   {239, false, false, true }, // Marine
   //{240, false, true, true }, // Marine Shadow
   {241, false, false, false }, // Marine Remnants
-  {242, false, false, false }, // Marine Death
+  //{242, false, false, false }, // Marine Death
   {243, false, false, true }, // Wraith
   //{244, false, true, true }, // Wraith Shadow
   {245, true, false, true }, // Wraith Engines
-  {246, false, false, false }, // Scanner Sweep
+  //{246, false, false, false }, // Scanner Sweep
   {247, false, false, true }, // SCV
   //{248, false, true, true }, // SCV Shadow
   {249, true, false, true }, // SCV Glow
@@ -267,7 +267,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {272, false, false, false }, // Comsat Station Connector
   {273, false, false, false }, // Comsat Station Overlay
   {274, false, true, false }, // Comsat Station Shadow
-  {275, false, false, false }, // Command Center
+  //{275, false, false, false }, // Command Center
   {276, false, false, false }, // Command Center Overlay
   {277, false, true, false }, // Command Center Shadow
   {278, false, false, false }, // Supply Depot
@@ -322,11 +322,11 @@ std::vector<imagedat_info_t> image_predefs = {
   {327, false, false, false }, // Terran Construction (Medium)
   {328, false, true, false }, // Terran Construction (Medium) Shadow
   {329, false, false, false }, // Addon Construction
-  {330, false, false, false }, // Terran Construction (Small)
+  //{330, false, false, false }, // Terran Construction (Small)
   {331, false, true, false }, // Terran Construction (Small) Shadow
   {332, true, false, false }, // Explosion2 (Small)
   {333, true, false, false }, // Explosion2 (Medium)
-  {334, true, false, false }, // Building Explosion (Large)
+  //{334, true, false, false }, // Building Explosion (Large)   // TODO: wtf?
   {335, false, false, false }, // Terran Building Rubble (Small)
   {336, false, false, false }, // Terran Building Rubble (Large)
   {337, true, false, false }, // Dark Swarm
@@ -337,8 +337,8 @@ std::vector<imagedat_info_t> image_predefs = {
   {342, false, false, true }, // Bengalaas (Jungle)
   //{343, false, true, true }, // Bengalaas (Jungle) Shadow
   {344, false, false, false, true }, // Vespene Geyser
-  {345, false, false, false, true }, // Vespene Geyser2
-  //{346, false, true, false, true }, // Vespene Geyser Shadow
+  //{345, false, false, false, true }, // Vespene Geyser2
+  {346, false, true, false, true }, // Vespene Geyser Shadow
   {347, false, false, false, true }, // Mineral Field Type1
   {348, false, true, false, true }, // Mineral Field Type1 Shadow
   {349, false, false, false, true }, // Mineral Field Type2
@@ -356,10 +356,10 @@ std::vector<imagedat_info_t> image_predefs = {
   {363, true, false, false }, // Lockdown Field (Large)
   {364, true, false, false }, // Stasis Field Hit
   {365, true, false, false }, // Stasis Field (Small)
-  {366, true, false, false }, // Stasis Field (Medium)
+  //{366, true, false, false }, // Stasis Field (Medium)
   {367, true, false, false }, // Stasis Field (Large)
   {368, true, false, false }, // Recharge Shields (Small)
-  {369, true, false, false }, // Recharge Shields (Medium)
+  //{369, true, false, false }, // Recharge Shields (Medium)
   {370, true, false, false }, // Recharge Shields (Large)
   {371, true, false, false }, // Defensive Matrix Front (Small)
   {372, true, false, false }, // Defensive Matrix Front (Medium)
@@ -371,8 +371,8 @@ std::vector<imagedat_info_t> image_predefs = {
   {378, true, false, false }, // Defensive Matrix Hit (Medium)
   {379, true, false, false }, // Defensive Matrix Hit (Large)
   {380, true, false, false }, // Irradiate (Small)
-  {381, true, false, false }, // Irradiate (Medium)
-  {382, true, false, false }, // Irradiate (Large)
+  //{381, true, false, false }, // Irradiate (Medium)
+  //{382, true, false, false }, // Irradiate (Large)
   {383, false, false, false }, // Ensnare Cloud
   {384, false, false, false }, // Ensnare Overlay (Small)
   {385, false, false, false }, // Ensnare Overlay (Medium)
@@ -388,13 +388,13 @@ std::vector<imagedat_info_t> image_predefs = {
   {395, false, false, true }, // Data Disc
   {396, false, false, false }, // Khaydarin Crystal
   {397, false, false, true }, // Mineral Chunk Type1
-  {398, false, false, true }, // Mineral Chunk Type2
+  //{398, false, false, true }, // Mineral Chunk Type2
   {399, false, false, true }, // Protoss Gas Orb Type1
-  {400, false, false, true }, // Protoss Gas Orb Type2
+  //{400, false, false, true }, // Protoss Gas Orb Type2
   {401, false, false, true }, // Zerg Gas Sac Type1
-  {402, false, false, true }, // Zerg Gas Sac Type2
+  //{402, false, false, true }, // Zerg Gas Sac Type2
   {403, false, false, false }, // Terran Gas Tank Type1
-  {404, false, false, false }, // Terran Gas Tank Type2
+  //{404, false, false, false }, // Terran Gas Tank Type2
   //{405, false, true, true }, // Mineral Chunk Shadow
   //{406, false, true, true }, // Protoss Gas Orb Shadow
   //{407, false, true, true }, // Zerg Gas Sac Shadow
@@ -409,7 +409,7 @@ std::vector<imagedat_info_t> image_predefs = {
   //{416, false, true, true }, // Young Chrysalis Shadow (Carried)
   {417, false, true, false }, // Psi Emitter Shadow (Ground)
   {418, false, true, false }, // Psi Emitter Shadow (Carried)
-  {421, true, false, true }, // FlameThrower
+  //{421, true, false, true }, // FlameThrower    // TODO: WTF?
   {422, true, false, false }, // Longbolt/Gemini Missiles Trail
   {423, false, false, false }, // Burrowing Dust
   {424, true, false, false }, // Shield Overlay
@@ -425,7 +425,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {435, true, false, false }, // Depleted Vespene Geyser Smoke1 Overlay
   {440, true, false, false }, // Fragmentation Grenade Hit
   {441, false, false, false }, // Grenade Shot Smoke
-  {442, false, false, false }, // Anti-Matter Missile Hit
+  //{442, false, false, false }, // Anti-Matter Missile Hit
   {443, true, false, false }, // Scarab/Anti-Matter Missile Overlay
   {444, true, false, false }, // Scarab Hit
   {445, true, false, false }, // Cursor Marker
@@ -435,22 +435,23 @@ std::vector<imagedat_info_t> image_predefs = {
   {450, true, false, false }, // Flames1 Type1 (Small)
   {451, true, false, false }, // Flames1 Type2 (Small)
   {452, true, false, false }, // Flames1 Type3 (Small)
-  {453, true, false, false }, // Flames2 Type3 (Small)
-  {454, true, false, false }, // Flames3 Type3 (Small)
-  {455, true, false, false }, // Flames4 Type3 (Small)
-  {456, true, false, false }, // Flames5 Type3 (Small)
-  {457, true, false, false }, // Flames6 Type3 (Small)
+  //{453, true, false, false }, // Flames2 Type3 (Small)
+  //{454, true, false, false }, // Flames3 Type3 (Small)
+  //{455, true, false, false }, // Flames4 Type3 (Small)
+  //{456, true, false, false }, // Flames5 Type3 (Small)
+  //{457, true, false, false }, // Flames6 Type3 (Small)
   {458, false, false, false }, // Bleeding Variant1 Type1 (Small)
   {459, false, false, false }, // Bleeding Variant1 Type2 (Small)
   {460, false, false, false }, // Bleeding Variant1 Type3 (Small)
   {461, false, false, false }, // Bleeding Variant1 Type4 (Small)
-  {462, false, false, false }, // Bleeding Variant2 Type1 (Small)
-  {463, false, false, false }, // Bleeding Variant2 Type2 (Small)
-  {464, false, false, false }, // Bleeding Variant2 Type3 (Small)
-  {465, false, false, false }, // Bleeding Variant2 Type4 (Small)
+  //{462, false, false, false }, // Bleeding Variant2 Type1 (Small)
+  //{463, false, false, false }, // Bleeding Variant2 Type2 (Small)
+  //{464, false, false, false }, // Bleeding Variant2 Type3 (Small)
+  //{465, false, false, false }, // Bleeding Variant2 Type4 (Small)
   {466, true, false, false }, // Flames2 Type1 (Small)
   {467, true, false, false }, // Flames2 Type2 (Small)
   {468, true, false, false }, // Flames7 Type3 (Small)
+    /*
   {469, true, false, false }, // Flames3 Type1 (Small)
   {470, true, false, false }, // Flames3 Type2 (Small)
   {471, true, false, false }, // Flames8 Type3 (Small)
@@ -476,6 +477,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {491, true, false, false }, // Flames3 Type1 (Large)
   {492, true, false, false }, // Flames3 Type2 (Large)
   {493, true, false, false }, // Flames8 Type3 (Large)
+  */
   {494, false, false, false }, // Building Landing Dust Type1
   {495, false, false, false }, // Building Landing Dust Type2
   {496, false, false, false }, // Building Landing Dust Type3
@@ -498,7 +500,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {516, false, false, false }, // Queen Spell Holder
   {517, true, false, false }, // Consume
   {518, true, false, true }, // Guardian Attack Overlay
-  {519, true, false, false }, // Dual Photon Blasters Hit
+  //{519, true, false, false }, // Dual Photon Blasters Hit   // TODO: WTF?
   {520, true, false, false }, // Particle Beam Hit
   {521, false, false, true }, // Anti-Matter Missile
   {522, true, false, true }, // Pulse Cannon
@@ -510,7 +512,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {528, false, false, true }, // Gemini Missiles
   {529, false, false, true }, // Lockdown/LongBolt/Hellfire Missile
   {530, true, false, false }, // Gemini Missiles Explosion
-  {531, true, false, false }, // C-10 Canister Rifle Hit
+  //{531, true, false, false }, // C-10 Canister Rifle Hit
   {532, false, false, false }, // Fragmentation Grenade
   {533, true, false, false }, // Arclite Shock Cannon Hit
   {534, true, false, true }, // ATS/ATA Laser Battery
@@ -521,23 +523,23 @@ std::vector<imagedat_info_t> image_predefs = {
   {539, true, false, false }, // Science Vessel Overlay (Part2)
   {540, true, false, false }, // Science Vessel Overlay (Part3)
   {541, true, false, true }, // Yamato Gun
-  {542, true, false, true }, // Yamato Gun Trail
+  //{542, true, false, true }, // Yamato Gun Trail
   {543, true, false, false }, // Yamato Gun Overlay
   {544, true, false, false }, // Yamato Gun Hit
   {545, true, false, false }, // Hallucination Hit
   {546, true, false, false }, // Scanner Sweep Hit
-  {548, true, false, false }, // Psionic Shockwave Hit
+  //{548, true, false, false }, // Psionic Shockwave Hit
   {549, true, false, true }, // Archon Beam
 //  {550, true, false, false }, // Psionic Storm Part1
 //  {551, true, false, false }, // Psionic Storm Part2
 //  {552, true, false, false }, // Psionic Storm Part3
 //  {553, true, false, false }, // Psionic Storm Part4
-  {554, false, false, true }, // EMP Shockwave Missile
+  //{554, false, false, true }, // EMP Shockwave Missile
   {555, true, false, false }, // EMP Shockwave Hit (Part1)
   {556, true, false, false }, // EMP Shockwave Hit (Part2)
-  {557, true, false, false }, // Hallucination Death1
-  {558, true, false, false }, // Hallucination Death2
-  {559, true, false, false }, // Hallucination Death3
+  //{557, true, false, false }, // Hallucination Death1   // TODO: WTF?
+  //{558, true, false, false }, // Hallucination Death2
+  //{559, true, false, false }, // Hallucination Death3
 //  {561, true, false, false }, // Selection Circle (22pixels)
 //  {562, true, false, false }, // Selection Circle (32pixels)
 //  {563, true, false, false }, // Selection Circle (48pixels)
@@ -714,11 +716,11 @@ std::vector<imagedat_info_t> image_predefs = {
   {736, false, false, false }, // Floor Missile Trap
   {737, false, false, true }, // Floor Missile Trap Turret
   {738, false, false, false }, // Wall Missile Trap
-  {739, false, false, false }, // Wall Missile Trap2
+  //{739, false, false, false }, // Wall Missile Trap2
   {740, false, false, false }, // Wall Flame Trap
-  {741, false, false, false }, // Wall Flame Trap2
+  //{741, false, false, false }, // Wall Flame Trap2
   {742, false, false, false }, // Left Upper Level Door
-  {743, false, false, false }, // Right Upper Level Door
+  //{743, false, false, false }, // Right Upper Level Door
   //{744, false, false, false }, // 4/15 Installation1
   //{745, false, false, false }, // 4/15 Installation2
   //{746, false, false, false }, // 3/9 Installation
@@ -726,7 +728,7 @@ std::vector<imagedat_info_t> image_predefs = {
   //{748, false, false, false }, // 3/11 Installation
   //{749, false, false, false }, // 3/12 Installation
   {750, false, false, false }, // Substructure Left Door
-  {751, false, false, false }, // Substructure Right Door
+  //{751, false, false, false }, // Substructure Right Door
   //{752, false, false, false }, // 3/1 Installation
   //{753, false, false, false }, // 3/2 Installation
   {754, false, false, false }, // Substructure Opening Hole
@@ -895,7 +897,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {918, false, false, false }, // Devourer Death
   {919, false, false, false }, // Lurker Birth
   {920, false, false, false }, // Lurker Remnants
-  {921, false, false, true }, // Lurker
+  //{921, false, false, true }, // Lurker
   //{922, false, true, true }, // Lurker Shadow
   {923, false, false, false }, // Overmind Cocoon
   {924, false, true, false }, // Overmind Cocoon Shadow
@@ -906,7 +908,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {929, false, false, true }, // Corsair
   //{930, false, true, true }, // Corsair Shadow
   {931, true, false, true }, // Corsair Engines
-  {933, false, false, true }, // Dark Templar (Unit)
+  //{933, false, false, true }, // Dark Templar (Unit)
   {934, false, false, false }, // Warp Gate
   {935, false, true, false }, // Warp Gate Shadow
   {936, true, false, false }, // Warp Gate Overlay
@@ -935,17 +937,17 @@ std::vector<imagedat_info_t> image_predefs = {
   {961, false, false, false }, // Subterranean Spines
   {962, false, false, true }, // Corrosive Acid Shot
   {963, false, false, false }, // Corrosive Acid Hit
-  {964, true, false, false }, // Neutron Flare
+  //{964, true, false, false }, // Neutron Flare  // TODO: WTF?
   {965, false, false, true }, // Halo Rockets
-  {966, false, false, false }, // Optical Flare Grenade
+  //{966, false, false, false }, // Optical Flare Grenade
   {967, true, false, false }, // Restoration Hit (Small)
-  {968, true, false, false }, // Restoration Hit (Medium)
+  //{968, true, false, false }, // Restoration Hit (Medium)
   {969, true, false, false }, // Restoration Hit (Large)
   {973, true, false, false }, // Mind Control Hit (Small)
   {974, true, false, false }, // Mind Control Hit (Medium)
   {975, true, false, false }, // Mind Control Hit (Large)
   {976, true, false, false }, // Optical Flare Hit (Small)
-  {977, true, false, false }, // Optical Flare Hit (Medium)
+  //{977, true, false, false }, // Optical Flare Hit (Medium) // TODO: WTF?
   {978, true, false, false }, // Optical Flare Hit (Large)
   {979, true, false, false }, // Feedback (Small)
   {980, true, false, false }, // Feedback (Medium)

@@ -70,7 +70,7 @@ anim_t loadAnim(const std::vector<std::uint8_t>& data) {
     std::fwrite(dds.data.data(), 1, dds.data.size(), ftmp);
     std::fseek(ftmp, 0, SEEK_SET);
 
-    CImg cimg{ unsigned(dds.width), unsigned(dds.height), 1, 4 };
+    CImg cimg(unsigned(dds.width), unsigned(dds.height), 1, 4);
     cimg.load_rgba(ftmp, dds.width, dds.height);
     //cimg_library::CImg<std::uint8_t> cimg{ dds.data.data(), unsigned(dds.width), unsigned(dds.height), 1, 4 };
     //cimg.display();

@@ -56,10 +56,10 @@ int main(int argc, const char** argv) {
     return 1;
   }
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
   std::cerr << "Attach debugger then press enter..." << std::endl;
   std::cin.ignore();
-#endif
+//#endif
 
   auto clock_start = std::chrono::steady_clock::now();
   
@@ -70,10 +70,16 @@ int main(int argc, const char** argv) {
   std::vector<std::uint8_t> buffer;
 
   for (imagedat_info_t& img_def : image_predefs) {
-    std::cerr << "Converting ID " << img_def.id << "\n";
-    std::snprintf(filename.data(), filename.size(), "anim\\main_%03d.anim", img_def.id);
-    get_file_data(hCasc, filename.data(), buffer);
-    convert_anim(buffer, img_def);
+    try {
+      std::cerr << "Converting ID " << img_def.id << ". ";
+
+      std::snprintf(filename.data(), filename.size(), "anim\\main_%03d.anim", img_def.id);
+      if (!get_file_data(hCasc, filename.data(), buffer)) continue;
+      convert_anim(buffer, img_def);
+    }
+    catch (const std::exception &e) {
+      std::cerr << "Failed to convert ID " << img_def.id << " - " << e.what() << std::endl;
+    }
   }
 
   auto clock_end = std::chrono::steady_clock::now();
