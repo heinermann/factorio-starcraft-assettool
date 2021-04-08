@@ -3,24 +3,24 @@
 std::vector<imagedat_info_t> image_predefs = {
   imagedat_info_t
   {0, false, false, true }, // Scourge
-  {1, false, true, true }, // Scourge Shadow
+  //{1, false, true, true }, // Scourge Shadow
   {2, false, false, false }, // Scourge Birth
   {3, false, false, false }, // Scourge Death
   {4, true, false, false }, // Scourge Explosion
   {5, false, false, true }, // Broodling
-  {6, false, true, true }, // Broodling Shadow
+  //{6, false, true, true }, // Broodling Shadow
   {7, false, false, false }, // Broodling Remnants
   {8, false, false, true }, // Infested Terran
-  {9, false, true, true }, // Infested Terran Shadow
+  //{9, false, true, true }, // Infested Terran Shadow
   {10, true, false, false }, // Infested Terran Explosion
   {11, false, false, false }, // Guardian Cocoon
   {12, false, true, false }, // Guardian Cocoon Shadow
   {13, false, false, true }, // Defiler
-  {14, false, true, true }, // Defiler Shadow
+  //{14, false, true, true }, // Defiler Shadow
   {15, false, false, false }, // Defiler Birth
   {16, false, false, false }, // Defiler Remnants
   {17, false, false, true }, // Drone
-  {18, false, true, true }, // Drone Shadow
+  //{18, false, true, true }, // Drone Shadow
   {19, false, false, false }, // Drone Birth
   {20, false, false, false }, // Drone Remnants
   {21, false, false, false }, // Egg
@@ -28,36 +28,36 @@ std::vector<imagedat_info_t> image_predefs = {
   {23, false, false, false }, // Egg Spawn
   {24, false, false, false }, // Egg Remnants
   {25, false, false, true }, // Guardian
-  {26, false, true, true }, // Guardian Shadow
+  //{26, false, true, true }, // Guardian Shadow
   {27, false, false, false }, // Guardian Birth
   {28, false, false, false }, // Guardian Death
   {29, false, false, true }, // Hydralisk
-  {30, false, true, true }, // Hydralisk Shadow
+  //{30, false, true, true }, // Hydralisk Shadow
   {31, false, false, false }, // Hydralisk Birth
   {32, false, false, false }, // Hydralisk Remnants
   {33, false, false, true }, // Infested Kerrigan
-  {34, false, true, true }, // Infested Kerrigan Shadow
+  //{34, false, true, true }, // Infested Kerrigan Shadow
   {35, false, false, true }, // Needle Spines
   {36, false, false, true }, // Larva
   {37, false, false, false }, // Larva Remnants
   {38, false, false, true }, // Mutalisk
-  {39, false, true, true }, // Mutalisk Shadow
+  //{39, false, true, true }, // Mutalisk Shadow
   {40, false, false, false }, // Mutalisk Birth
   {41, false, false, false }, // Mutalisk Death
   {42, false, false, true }, // Overlord
-  {43, false, true, true }, // Overlord Shadow
+  //{43, false, true, true }, // Overlord Shadow
   {44, false, false, false }, // Overlord Birth
   {45, false, false, false }, // Overlord Death
   {46, false, false, true }, // Queen
-  {47, false, true, true }, // Queen Shadow
+  //{47, false, true, true }, // Queen Shadow
   {48, false, false, false }, // Queen Death
   {49, false, false, false }, // Queen Birth
   {50, false, false, true }, // Ultralisk
-  {51, false, true, true }, // Ultralisk Shadow
+  //{51, false, true, true }, // Ultralisk Shadow
   {52, false, false, false }, // Ultralisk Birth
   {53, false, false, false }, // Ultralisk Remnants
   {54, false, false, true }, // Zergling
-  {55, false, true, true }, // Zergling Shadow
+  //{55, false, true, true }, // Zergling Shadow
   {56, false, false, false }, // Zergling Birth
   {57, false, false, false }, // Zergling Remnants
   {58, false, false, false }, // Zerg Air Death Explosion (Large)
@@ -115,37 +115,37 @@ std::vector<imagedat_info_t> image_predefs = {
   {110, false, false, false }, // Zerg Building Rubble (Small)
   {111, false, false, false }, // Zerg Building Rubble (Large)
   {112, false, false, true }, // Carrier
-  {113, false, true, true }, // Carrier Shadow
+  //{113, false, true, true }, // Carrier Shadow
   {114, true, false, true }, // Carrier Engines
   {116, false, false, true }, // Interceptor
-  {117, false, true, true }, // Interceptor Shadow
+  //{117, false, true, true }, // Interceptor Shadow
   {118, false, false, true }, // Shuttle
-  {119, false, true, true }, // Shuttle Shadow
+  //{119, false, true, true }, // Shuttle Shadow
   {120, true, false, true }, // Shuttle Engines
   {122, false, false, true }, // Dragoon
-  {123, false, true, true }, // Dragoon Shadow
+  //{123, false, true, true }, // Dragoon Shadow
   {124, false, false, false }, // Dragoon Remnants
   {126, false, false, true }, // High Templar
-  {127, false, true, true }, // High Templar Shadow
+  //{127, false, true, true }, // High Templar Shadow
   {129, false, false, true }, // Dark Templar (Hero)
   {130, false, false, true }, // Arbiter
-  {131, false, true, true }, // Arbiter Shadow
+  //{131, false, true, true }, // Arbiter Shadow
   {132, true, false, true }, // Arbiter Engines
   {134, true, false, false }, // Archon Energy
   {135, true, false, true }, // Archon Being
   {136, true, false, false }, // Archon Swirl
   {137, false, false, true }, // Probe
-  {138, false, true, true }, // Probe Shadow
+  //{138, false, true, true }, // Probe Shadow
   {140, false, false, true }, // Scout
-  {141, false, true, true }, // Scout Shadow
+  //{141, false, true, true }, // Scout Shadow
   {142, true, false, true }, // Scout Engines
   {144, false, false, true }, // Reaver
-  {145, false, true, true }, // Reaver Shadow
+  //{145, false, true, true }, // Reaver Shadow
   {147, false, false, true }, // Scarab
   {148, false, false, true }, // Observer
-  {149, false, true, true }, // Observer Shadow
+  //{149, false, true, true }, // Observer Shadow
   {151, false, false, true }, // Zealot
-  {152, false, true, true }, // Zealot Shadow
+  //{152, false, true, true }, // Zealot Shadow
   {153, false, false, false }, // Zealot Death
   {155, false, false, false }, // Templar Archives
   {156, true, false, false }, // Templar Archives Warp Flash
@@ -211,45 +211,45 @@ std::vector<imagedat_info_t> image_predefs = {
   {216, false, false, false }, // Protoss Building Rubble (Small)
   {217, false, false, false }, // Protoss Building Rubble (Large)
   {218, false, false, true }, // Battlecruiser
-  {219, false, true, true }, // Battlecruiser Shadow
+  //{219, false, true, true }, // Battlecruiser Shadow
   {220, true, false, true }, // Battlecruiser Engines
   {221, false, false, true }, // Civilian
-  {222, false, true, true }, // Civilian Shadow
+  //{222, false, true, true }, // Civilian Shadow
   {223, false, false, true }, // Dropship
-  {224, false, true, true }, // Dropship Shadow
+  //{224, false, true, true }, // Dropship Shadow
   {225, true, false, true }, // Dropship Engines
   {226, false, false, true }, // Firebat
-  {227, false, true, true }, // Firebat Shadow
+  //{227, false, true, true }, // Firebat Shadow
   {228, false, false, true }, // Ghost
-  {229, false, true, true }, // Ghost Shadow
+  //{229, false, true, true }, // Ghost Shadow
   {230, false, false, false }, // Ghost Remnants
   {231, false, false, false }, // Ghost Death
   {232, true, false, true }, // Nuke Beam
   {233, true, false, false }, // Nuke Target Dot
   {234, false, false, true }, // Goliath Base
   {235, false, false, true }, // Goliath Turret
-  {236, false, true, true }, // Goliath Shadow
+  //{236, false, true, true }, // Goliath Shadow
   {237, false, false, true }, // Sarah Kerrigan
-  {238, false, true, true }, // Sarah Kerrigan Shadow
+  //{238, false, true, true }, // Sarah Kerrigan Shadow
   {239, false, false, true }, // Marine
-  {240, false, true, true }, // Marine Shadow
+  //{240, false, true, true }, // Marine Shadow
   {241, false, false, false }, // Marine Remnants
   {242, false, false, false }, // Marine Death
   {243, false, false, true }, // Wraith
-  {244, false, true, true }, // Wraith Shadow
+  //{244, false, true, true }, // Wraith Shadow
   {245, true, false, true }, // Wraith Engines
   {246, false, false, false }, // Scanner Sweep
   {247, false, false, true }, // SCV
-  {248, false, true, true }, // SCV Shadow
+  //{248, false, true, true }, // SCV Shadow
   {249, true, false, true }, // SCV Glow
   {250, false, false, true }, // Siege Tank (Tank) Base
   {251, false, false, true }, // Siege Tank (Tank) Turret
-  {252, false, true, true }, // Siege Tank (Tank) Base Shadow
+  //{252, false, true, true }, // Siege Tank (Tank) Base Shadow
   {253, false, false, false }, // Siege Tank (Siege) Base
   {254, false, false, true }, // Siege Tank (Siege) Turret
   {255, false, true, false }, // Siege Tank (Siege) Base Shadow
   {256, false, false, true }, // Vulture
-  {257, false, true, true }, // Vulture Shadow
+  //{257, false, true, true }, // Vulture Shadow
   {258, false, false, false }, // Spider Mine
   {259, false, true, false }, // Spider Mine Shadow
   {260, false, false, false }, // Science Vessel (Base)
@@ -331,14 +331,14 @@ std::vector<imagedat_info_t> image_predefs = {
   {336, false, false, false }, // Terran Building Rubble (Large)
   {337, true, false, false }, // Dark Swarm
   {338, false, false, true }, // Ragnasaur (Ash)
-  {339, false, true, true }, // Ragnasaur (Ash) Shadow
+  //{339, false, true, true }, // Ragnasaur (Ash) Shadow
   {340, false, false, true }, // Rhynadon (Badlands)
-  {341, false, true, true }, // Rhynadon (Badlands) Shadow
+  //{341, false, true, true }, // Rhynadon (Badlands) Shadow
   {342, false, false, true }, // Bengalaas (Jungle)
-  {343, false, true, true }, // Bengalaas (Jungle) Shadow
+  //{343, false, true, true }, // Bengalaas (Jungle) Shadow
   {344, false, false, false, true }, // Vespene Geyser
   {345, false, false, false, true }, // Vespene Geyser2
-  {346, false, true, false, true }, // Vespene Geyser Shadow
+  //{346, false, true, false, true }, // Vespene Geyser Shadow
   {347, false, false, false, true }, // Mineral Field Type1
   {348, false, true, false, true }, // Mineral Field Type1 Shadow
   {349, false, false, false, true }, // Mineral Field Type2
@@ -395,18 +395,18 @@ std::vector<imagedat_info_t> image_predefs = {
   {402, false, false, true }, // Zerg Gas Sac Type2
   {403, false, false, false }, // Terran Gas Tank Type1
   {404, false, false, false }, // Terran Gas Tank Type2
-  {405, false, true, true }, // Mineral Chunk Shadow
-  {406, false, true, true }, // Protoss Gas Orb Shadow
-  {407, false, true, true }, // Zerg Gas Sac Shadow
+  //{405, false, true, true }, // Mineral Chunk Shadow
+  //{406, false, true, true }, // Protoss Gas Orb Shadow
+  //{407, false, true, true }, // Zerg Gas Sac Shadow
   {408, false, true, false }, // Terran Gas Tank Shadow
   {409, false, true, false }, // Data Disk Shadow (Ground)
-  {410, false, true, true }, // Data Disk Shadow (Carried)
+  //{410, false, true, true }, // Data Disk Shadow (Carried)
   {411, false, true, false }, // Flag Shadow (Ground)
   {412, false, true, false }, // Flag Shadow (Carried)
   {413, false, true, false }, // Crystal Shadow (Ground)
   {414, false, true, false }, // Crystal Shadow (Carried)
   {415, false, true, false }, // Young Chrysalis Shadow (Ground)
-  {416, false, true, true }, // Young Chrysalis Shadow (Carried)
+  //{416, false, true, true }, // Young Chrysalis Shadow (Carried)
   {417, false, true, false }, // Psi Emitter Shadow (Ground)
   {418, false, true, false }, // Psi Emitter Shadow (Carried)
   {421, true, false, true }, // FlameThrower
@@ -890,13 +890,13 @@ std::vector<imagedat_info_t> image_predefs = {
  // {912, false, false, false }, // 11/3 Desert
   {914, false, false, false }, // Lurker Egg
   {915, false, false, true }, // Devourer
-  {916, false, true, true }, // Devourer Shadow
+  //{916, false, true, true }, // Devourer Shadow
   {917, false, false, false }, // Devourer Birth
   {918, false, false, false }, // Devourer Death
   {919, false, false, false }, // Lurker Birth
   {920, false, false, false }, // Lurker Remnants
   {921, false, false, true }, // Lurker
-  {922, false, true, true }, // Lurker Shadow
+  //{922, false, true, true }, // Lurker Shadow
   {923, false, false, false }, // Overmind Cocoon
   {924, false, true, false }, // Overmind Cocoon Shadow
   {925, true, false, false }, // Dark Archon Energy
@@ -904,7 +904,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {927, true, false, false }, // Dark Archon Swirl
   {928, true, false, false }, // Dark Archon Death
   {929, false, false, true }, // Corsair
-  {930, false, true, true }, // Corsair Shadow
+  //{930, false, true, true }, // Corsair Shadow
   {931, true, false, true }, // Corsair Engines
   {933, false, false, true }, // Dark Templar (Unit)
   {934, false, false, false }, // Warp Gate
@@ -913,10 +913,10 @@ std::vector<imagedat_info_t> image_predefs = {
   {937, false, false, false }, // Xel'Naga Temple
   {938, false, true, false }, // Xel'Naga Temple Shadow
   {939, false, false, true }, // Valkyrie
-  {940, false, true, true }, // Valkyrie Shadow
+  //{940, false, true, true }, // Valkyrie Shadow
   {941, true, false, true }, // Valkyrie Engines
   {944, false, false, true }, // Medic
-  {945, false, true, true }, // Medic Shadow
+  //{945, false, true, true }, // Medic Shadow
   {946, false, false, false }, // Medic Remnants
   {947, false, false, false }, // Psi Disrupter
   {948, false, true, false }, // Psi Disrupter Shadow
@@ -924,11 +924,11 @@ std::vector<imagedat_info_t> image_predefs = {
   {950, false, true, false }, // Power Generator Shadow
   {951, true, false, false }, // Disruption Web
   {952, false, false, true }, // Scantid (Desert)
-  {953, false, true, true }, // Scantid (Desert) Shadow
+  //{953, false, true, true }, // Scantid (Desert) Shadow
   {954, false, false, true }, // Kakaru (Twilight)
-  {955, false, true, true }, // Kakaru (Twilight) Shadow
+  //{955, false, true, true }, // Kakaru (Twilight) Shadow
   {956, false, false, true }, // Ursadon (Ice)
-  {957, false, true, true }, // Ursadon (Ice) Shadow
+  //{957, false, true, true }, // Ursadon (Ice) Shadow
   {958, false, false, false }, // Uraj
   {959, false, false, false }, // Khalis
   {960, true, false, false }, // Halo Rockets Trail
