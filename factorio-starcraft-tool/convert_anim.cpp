@@ -56,8 +56,7 @@ namespace cimg_library {
       // Setup PNG structures for write
       png_voidp user_error_ptr = 0;
       png_error_ptr user_error_fn = 0, user_warning_fn = 0;
-      png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, user_error_ptr, user_error_fn,
-        user_warning_fn);
+      png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, user_error_ptr, user_error_fn, user_warning_fn);
       if (!png_ptr) {
         cimg::fclose(nfile);
         throw CImgIOException(_cimg_instance
@@ -77,14 +76,21 @@ namespace cimg_library {
       png_init_io(png_ptr, nfile);
 
       const int bit_depth = 8;
-      const int color_type = PNG_COLOR_TYPE_RGB_ALPHA;
+      int color_type;
+      switch (img.spectrum()) {
+      case 1: color_type = PNG_COLOR_TYPE_GRAY; break;
+      case 2: color_type = PNG_COLOR_TYPE_GRAY_ALPHA; break;
+      case 3: color_type = PNG_COLOR_TYPE_RGB; break;
+      default: color_type = PNG_COLOR_TYPE_RGB_ALPHA;
+      }
+
       const int interlace_type = PNG_INTERLACE_NONE;
       const int compression_type = PNG_COMPRESSION_TYPE_DEFAULT;
       const int filter_method = PNG_FILTER_TYPE_DEFAULT;
       png_set_IHDR(png_ptr, info_ptr, _width, _height, bit_depth, color_type, interlace_type, compression_type, filter_method);
       png_write_info(png_ptr, info_ptr);
       const int byte_depth = bit_depth >> 3;
-      const int numChan = 4;
+      const int numChan = img.spectrum() > 4 ? 4 : img.spectrum();
       const int pixel_bit_depth_flag = numChan * (bit_depth - 1);
 
       // Allocate Memory for Image Save and Fill pixel data
@@ -154,14 +160,13 @@ namespace cimg_library {
   }
 }
 
-CImg get_rotate90(const CImg& img) {
-  CImg result(img.height(), img.width(), 1, 4);
+CImg get_rotate90_black(const CImg& img) {
+  CImg result(img.height(), img.width(), 1, 2);
   int hm1 = img.height() - 1;
   for (int y = 0; y < img.height(); ++y) {
     for (int x = 0; x < img.width(); ++x) {
-      for (int c = 0; c < 4; ++c) {
-        result(hm1 - y, x, 0, c) = img(x, y, 0, c);
-      }
+      result(hm1 - y, x, 0, 0) = 0;
+      result(hm1 - y, x, 0, 1) = img(x, y, 0, 3);
     }
   }
   return result;
@@ -199,6 +204,7 @@ void BGRAtoRGBA(CImg& img) {
   }
 }
 
+/*
 void mask_to_black(CImg& img) {
   for (int y = 0; y < img.height(); ++y) {
     for (int x = 0; x < img.width(); ++x) {
@@ -209,16 +215,16 @@ void mask_to_black(CImg& img) {
     }
   }
 }
-
-// Zeroing out transparent pixels saves a lot of space on diffuse gfx
+*/
+// Zeroing out transparent pixels saves a lot of space on all sheets
 void zero_out_transparent(CImg& img) {
   for (int y = 0; y < img.height(); ++y) {
     for (int x = 0; x < img.width(); ++x) {
-      if (img(x, y, 0, 3) == 0) {
-        img(x, y, 0, 0) = 0;
-        img(x, y, 0, 1) = 0;
-        img(x, y, 0, 2) = 0;
-      }
+      
+      if (img(x, y, 0, img.spectrum() - 1) != 0) continue;
+
+      for (int c = 0; c < img.spectrum() - 1; ++c)
+        img(x, y, 0, c) = 0;
     }
   }
 }
@@ -297,7 +303,7 @@ CImg img_list_to_turns_sheet(const CImgList& frames, const supplement_info_t& in
   unsigned new_img_width = info.dst_cells_per_row * info.dst_frame_width;
   unsigned new_img_height = info.rows_per_turn * info.dst_frame_height * 32;
 
-  CImg result{ new_img_width, new_img_height, 1, 4, 0 };
+  CImg result{ new_img_width, new_img_height, 1, unsigned(frames(0).spectrum()), 0 };
   for (int turn = 0; turn < 32; ++turn) {
     for (int i = 0; i < info.num_frames_without_turns; ++i) {
       int x = (i % info.dst_cells_per_row) * info.dst_frame_width;
@@ -337,8 +343,8 @@ CImgList create_shadows(const CImgList& input, const supplement_info_t& info) {
     int shadow_turn = (turn - 8 + 32) % 32;
     for (int i = 0; i < info.num_frames_without_turns; ++i) {
       const CImg& input_img = input(shadow_turn * info.num_frames_without_turns + i);
-      CImg shadow = get_rotate90(input_img);
-      mask_to_black(shadow);
+      CImg shadow = get_rotate90_black(input_img);
+      //mask_to_black(shadow);
       shadow.resize(shadow.width() * 1.4, shadow.height() * 0.8);
 
       result.insert(std::move(shadow));
@@ -368,12 +374,12 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
         CImgList shadows = create_shadows(frames, anim_info);
         
         supplement_info_t shadow_info = anim_info;
-        shadow_info.dst_frame_height = anim_info.dst_frame_width * 0.8;
         shadow_info.dst_frame_width = anim_info.dst_frame_height * 1.4;
+        shadow_info.dst_frame_height = anim_info.dst_frame_width * 0.8;
         shadow_info.dst_cells_per_row = std::min(2048 / shadow_info.dst_frame_width, shadow_info.framecount);
         shadow_info.rows_per_turn = unsigned(std::ceil(double(shadow_info.num_frames_without_turns) / shadow_info.dst_cells_per_row));
 
-        CImg shadow_sheet = img_list_to_turns_sheet(shadows, anim_info);
+        CImg shadow_sheet = img_list_to_turns_sheet(shadows, shadow_info);
         output_sheets.emplace("shadow", std::move(shadow_sheet));
       }
 
