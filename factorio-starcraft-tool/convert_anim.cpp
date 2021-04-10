@@ -9,9 +9,11 @@
 #include <cstdio>
 #include <array>
 #include <cassert>
+#include <any>
 
 #include "image_predefs.h"
 #include "anim.h"
+#include "lua_writer.h"
 
 #include "../CImg/CImg.h"
 
@@ -246,8 +248,8 @@ supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_
     result.frame_offset_x = std::max(result.frame_offset_x, -f.xoffs);
     result.frame_offset_y = std::max(result.frame_offset_y, -f.yoffs);
   }
-  result.dst_frame_width += result.frame_offset_x;
-  result.dst_frame_height += result.frame_offset_y;
+  result.dst_frame_width += result.frame_offset_x*2;
+  result.dst_frame_height += result.frame_offset_y*2;
 
   if (img_info.vertical_frames) {
     result.dst_cells_per_row = 1;
@@ -423,6 +425,9 @@ std::unordered_map<int, std::vector<std::function<decltype(frames_convert_unproc
   {956, {frames_convert_extra({136, 137, 138, 139, 140, 141, 142, 143}, "death")} }
 };
 
+using anymap = std::map<std::string, std::any>;
+using anyvector = std::vector<std::any>;
+
 void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_info_t& img_info) {
   anim_t anim = loadAnim(anim_data);
   supplement_info_t anim_info = generate_supplemental_info(anim, img_info);
@@ -465,4 +470,17 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
   }
   std::cerr << std::endl;
 
+  // Write lua info
+  std::snprintf(filename.data(), filename.size(), "__starcraft__/graphics/main_%03d_diffuse.png", img_info.id);
+  
+  anymap lua_data = {
+    {"filename", std::string(filename.data())},
+    {"size", anyvector{ anim_info.dst_frame_width, anim_info.dst_frame_height }},
+    {"scale", 0.5},
+    {"frame_count", anim_info.framecount},
+    {"line_length", anim_info.dst_cells_per_row}
+  };
+
+  std::snprintf(filename.data(), filename.size(), "graphics/main_%03d.lua", img_info.id);
+  write_lua_file(filename.data(), lua_data);
 }
