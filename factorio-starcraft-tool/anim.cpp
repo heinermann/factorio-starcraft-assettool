@@ -18,7 +18,7 @@ constexpr std::uint32_t ANIM_HDR = MAKEFOURCC('A', 'N', 'I', 'M');
 using CImg = cimg_library::CImg<std::uint8_t>;
 
 anim_t loadAnim(const std::vector<std::uint8_t>& data) {
-  static std::vector<std::uint8_t> dds_work_buffer;
+  thread_local static std::vector<std::uint8_t> dds_work_buffer;
   TEST(data.size() > sizeof(anim_header_t) + sizeof(anim_entry_t) + 1);
 
   std::size_t read_offset = 0;

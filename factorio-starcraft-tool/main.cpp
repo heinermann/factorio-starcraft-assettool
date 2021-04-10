@@ -4,6 +4,9 @@
 #include <array>
 #include <vector>
 #include <chrono>
+#include <algorithm>
+#include <execution>
+#include <mutex>
 
 #include <CascLib.h>
 
@@ -19,7 +22,9 @@ HANDLE open_casc_storage(const std::string& install_dir) {
   return hCasc;
 }
 
+std::mutex g_casc_access_mutex;
 bool get_file_data(HANDLE hCasc, const std::string& file_name, std::vector<std::uint8_t>& result) {
+  std::lock_guard guard(g_casc_access_mutex);
 
   auto raise_error = [&](const std::string& msg) {
     std::cerr << "Failed to open file in Casc archive: " << msg << "\n";
@@ -65,24 +70,22 @@ void create_output_dirs() {
 void convert_graphics(HANDLE hCasc) {
   auto clock_start = std::chrono::steady_clock::now();
 
-  std::array<char, 64> filename;
-  std::vector<std::uint8_t> buffer;
+  std::cerr << "Converting Graphics\n";
 
-  for (imagedat_info_t& img_def : image_predefs) {
-    try {
-      std::cerr << "Converting ID " << img_def.id << ". ";
+  std::for_each(std::execution::par_unseq, image_predefs.cbegin(), image_predefs.cend(), [&hCasc](const imagedat_info_t& img_def) {
+    std::cerr << img_def.id << ", ";  // TODO: rid this
 
-      std::snprintf(filename.data(), filename.size(), "anim\\main_%03d.anim", img_def.id);
-      if (!get_file_data(hCasc, filename.data(), buffer)) continue;
+    std::vector<std::uint8_t> buffer;
+    std::array<char, 64> filename;
+
+    std::snprintf(filename.data(), filename.size(), "anim\\main_%03d.anim", img_def.id);
+    if (get_file_data(hCasc, filename.data(), buffer)) {
       convert_anim(buffer, img_def);
     }
-    catch (const std::exception& e) {
-      std::cerr << "Failed to convert ID " << img_def.id << " - " << e.what() << std::endl;
-    }
-  }
+  });
 
   auto clock_end = std::chrono::steady_clock::now();
-  std::cerr << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock_end - clock_start).count() << "ms" << std::endl;
+  std::cerr << "Done. Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock_end - clock_start).count() << "ms" << std::endl;
 }
 
 int main(int argc, const char** argv) {

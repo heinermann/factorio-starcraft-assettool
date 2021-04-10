@@ -460,15 +460,11 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
 
   // Write output PNGs
   std::array<char, 128> filename;
-  std::cerr << "Writing ID " << img_info.id << ": ";
   for (auto& sheet : output_sheets) {
-    std::cerr << sheet.first << ", ";
     std::snprintf(filename.data(), filename.size(), "graphics/main_%03d_%s.png", img_info.id, sheet.first.c_str());
     zero_out_transparent(sheet.second);
     cimg_library::save_png(sheet.second, filename.data());
-    //sheet.second.save_png(filename.data());
   }
-  std::cerr << std::endl;
 
   // Write lua info
   std::snprintf(filename.data(), filename.size(), "__starcraft__/graphics/main_%03d_diffuse.png", img_info.id);
