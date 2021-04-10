@@ -50,21 +50,20 @@ bool get_file_data(HANDLE hCasc, const std::string& file_name, std::vector<std::
   return true;
 }
 
-int main(int argc, const char** argv) {
-  if (argc < 2) {
-    std::cerr << "Requires an argument - StarCraft: Remastered installation directory." << std::endl;
-    return 1;
+void create_output_dirs() {
+  constexpr const char* const out_dirs[] = {
+    "graphics",
+    "sound",
+    "locale"
+  };
+
+  for (auto dir : out_dirs) {
+    std::filesystem::create_directory(dir);
   }
+}
 
-//#ifdef _DEBUG
-  std::cerr << "Attach debugger then press enter..." << std::endl;
-  std::cin.ignore();
-//#endif
-
+void convert_graphics(HANDLE hCasc) {
   auto clock_start = std::chrono::steady_clock::now();
-  
-  HANDLE hCasc = open_casc_storage(argv[1]);
-  if (hCasc == nullptr) return 2;
 
   std::array<char, 64> filename;
   std::vector<std::uint8_t> buffer;
@@ -77,11 +76,31 @@ int main(int argc, const char** argv) {
       if (!get_file_data(hCasc, filename.data(), buffer)) continue;
       convert_anim(buffer, img_def);
     }
-    catch (const std::exception &e) {
+    catch (const std::exception& e) {
       std::cerr << "Failed to convert ID " << img_def.id << " - " << e.what() << std::endl;
     }
   }
 
   auto clock_end = std::chrono::steady_clock::now();
   std::cerr << "Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock_end - clock_start).count() << "ms" << std::endl;
+}
+
+int main(int argc, const char** argv) {
+  if (argc < 2) {
+    std::cerr << "Requires an argument - StarCraft: Remastered installation directory." << std::endl;
+    return 1;
+  }
+
+//#ifdef _DEBUG
+  std::cerr << "Attach debugger then press enter..." << std::endl;
+  std::cin.ignore();
+//#endif
+
+  HANDLE hCasc = open_casc_storage(argv[1]);
+  if (hCasc == nullptr) return 2;
+
+  create_output_dirs();
+  convert_graphics(hCasc);
+
+  return 0;
 }

@@ -67,7 +67,7 @@ typedef struct {
   std::uint32_t width;      // grp width
   std::uint32_t height;     // grp height
 
-  std::unordered_map<std::string, cimg_library::CImg<std::uint8_t>> sheets;
+  std::vector<std::pair<std::string, cimg_library::CImg<std::uint8_t>>> sheets;
 
   std::vector<frame_t> framedata;
 } anim_t;

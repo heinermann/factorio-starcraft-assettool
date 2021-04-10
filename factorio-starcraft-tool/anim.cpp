@@ -76,7 +76,7 @@ anim_t loadAnim(const std::vector<std::uint8_t>& data) {
     //cimg.display();
     std::fclose(ftmp);
 
-    result.sheets.emplace(header->layernames[i], std::move(cimg));
+    result.sheets.emplace_back(header->layernames[i], std::move(cimg));
   }
 
   // Load frame data
