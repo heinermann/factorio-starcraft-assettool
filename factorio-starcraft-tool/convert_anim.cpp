@@ -10,6 +10,7 @@
 #include <array>
 #include <cassert>
 #include <any>
+#include <fstream>
 
 #include "image_predefs.h"
 #include "anim.h"
@@ -92,16 +93,17 @@ unsigned get_cells_per_row(const supplement_info_t& info) {
   return std::clamp(2048 / info.dst_frame_width, 1U, framecount);
 }
 
-supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_info_t& img_info) {
+supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_info_t& img_info, int first_frame, int last_frame) {
   supplement_info_t result = {};
   result.img = img_info;
-  result.framecount = anim.framedata.size();
+  result.framecount = unsigned(anim.framedata.size());
   result.dst_frame_width = anim.width;
   result.dst_frame_height = anim.height;
 
-  rect_t margins = { anim.width, anim.height, 0, 0 };
-
-  for (const frame_t& f : anim.framedata) {
+  constexpr int max_int = std::numeric_limits<int>::max();
+  rect_t margins = { max_int, max_int, max_int, max_int };
+  for (int i = first_frame; i <= last_frame; ++i) {
+    const frame_t& f = anim.framedata[i];
     margins.left = std::min(margins.left, int(f.xoffs));    // Note: can be negative
     margins.top = std::min(margins.top, int(f.yoffs));
     margins.right = std::min(margins.right, int(anim.width - (f.xoffs + f.width)));
@@ -133,7 +135,7 @@ supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_
 CImgList convert_to_img_list(const anim_t& anim, CImg& img, const supplement_info_t& info) {
   CImgList result(info.framecount, info.dst_frame_width, info.dst_frame_height, 1, 4, 0);
 
-  for (int i = 0; i < info.framecount; ++i) {
+  for (unsigned i = 0; i < info.framecount; ++i) {
     const frame_t& frame = anim.framedata[i];
     draw_image(result(i), frame.xoffs - info.margin_x, frame.yoffs - info.margin_y, img, frame);
   }
@@ -150,7 +152,7 @@ CImg img_list_to_sheet(const CImgList& frames, bool draw_indexes = false) {
   unsigned new_img_height = unsigned(std::ceil(double(frames.size()) / cells_per_row)) * frame_height;
 
   CImg result(new_img_width, new_img_height, 1, 4, 0);
-  for (int i = 0; i < frames.size(); ++i) {
+  for (unsigned i = 0; i < frames.size(); ++i) {
     int x = (i % cells_per_row) * frame_width;
     int y = (i / cells_per_row) * frame_height;
     result.draw_image(x, y, frames(i));
@@ -171,7 +173,7 @@ CImg img_list_to_turns_sheet(const CImgList& frames, const supplement_info_t& in
 
   CImg result(new_img_width, new_img_height, 1, unsigned(frames(0).spectrum()), 0);
   for (int turn = 0; turn < 32; ++turn) {
-    for (int i = 0; i < info.img.gfx_turns_frames; ++i) {
+    for (unsigned i = 0; i < info.img.gfx_turns_frames; ++i) {
       int x = (i % info.dst_cells_per_row) * info.dst_frame_width;
       int y = (turn * info.rows_per_turn + i / info.dst_cells_per_row) * info.dst_frame_height;
       result.draw_image(x, y, frames(i + turn * info.img.gfx_turns_frames));
@@ -183,7 +185,7 @@ CImg img_list_to_turns_sheet(const CImgList& frames, const supplement_info_t& in
 CImgList convert_to_gfxturns(const CImgList& frames, const supplement_info_t& info) {
   // Create turns sheet
   CImgList newframes(info.img.gfx_turns_frames * 32);
-  for (int i = 0; i < info.img.gfx_turns_frames; ++i) {
+  for (unsigned i = 0; i < info.img.gfx_turns_frames; ++i) {
     for (int turn = 0; turn < 17; ++turn) {
       newframes(turn * info.img.gfx_turns_frames + i) = frames(i * 17 + turn);
     }
@@ -200,11 +202,11 @@ CImgList create_shadows(const CImgList& input, const supplement_info_t& info) {
   CImgList result;
   for (int turn = 0; turn < 32; ++turn) {
     int shadow_turn = (turn - 8 + 32) % 32;
-    for (int i = 0; i < info.img.gfx_turns_frames; ++i) {
+    for (unsigned i = 0; i < info.img.gfx_turns_frames; ++i) {
       const CImg& input_img = input(shadow_turn * info.img.gfx_turns_frames + i);
       CImg shadow = get_rotate90_black(input_img);
       //mask_to_black(shadow);
-      shadow.resize(shadow.width() * 1.4, shadow.height() * 0.8);
+      shadow.resize(int(shadow.width() * 1.4), int(shadow.height() * 0.8));
 
       result.insert(std::move(shadow));
     }
@@ -225,8 +227,8 @@ void frames_convert_gfxturns(const std::string& name, const CImgList& frames, co
     CImgList shadows = create_shadows(turn_frames, info);
 
     supplement_info_t shadow_info = info;
-    shadow_info.dst_frame_width = info.dst_frame_height * 1.4;
-    shadow_info.dst_frame_height = info.dst_frame_width * 0.8;
+    shadow_info.dst_frame_width = unsigned(info.dst_frame_height * 1.4);
+    shadow_info.dst_frame_height = unsigned(info.dst_frame_width * 0.8);
     shadow_info.dst_cells_per_row = get_cells_per_row(shadow_info);
     shadow_info.rows_per_turn = unsigned(std::ceil(double(shadow_info.img.gfx_turns_frames) / shadow_info.dst_cells_per_row));
 
@@ -306,7 +308,8 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
     anim.width /= 2;
     anim.height /= 2;
   }
-  supplement_info_t anim_info = generate_supplemental_info(anim, img_info);
+
+  supplement_info_t anim_info = generate_supplemental_info(anim, img_info, 0, anim.framedata.size() - 1);
 
   std::unordered_map<std::string, CImg> output_sheets;
 
@@ -316,8 +319,8 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
 
     CImgList frames = convert_to_img_list(anim, sheet.second, anim_info);
     //if (sheet.first == "diffuse") {
-      //output_sheets.emplace("original", sheet.second);
-      //output_sheets.emplace("frame_map", img_list_to_sheet(frames, true));
+    //  output_sheets.emplace("original", sheet.second);
+    //  output_sheets.emplace("frame_map", img_list_to_sheet(frames, true));
     //}
 
     if (anim_info.using_turns) {
