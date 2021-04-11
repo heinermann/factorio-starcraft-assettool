@@ -39,6 +39,9 @@
     <ClCompile Include="casc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="progress.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="image_predefs.h">
@@ -60,6 +63,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="casc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="progress.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

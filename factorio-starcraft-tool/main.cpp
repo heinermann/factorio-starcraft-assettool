@@ -8,6 +8,7 @@
 #include <execution>
 
 #include "casc.h"
+#include "progress.h"
 
 #include "convert_anim.h"
 #include "image_predefs.h"
@@ -28,9 +29,10 @@ void convert_graphics(Casc& casc) {
   auto clock_start = std::chrono::steady_clock::now();
 
   std::cerr << "Converting Graphics\n";
+  ProgressBar progress("Hi-Res Graphics", image_predefs.size());
 
-  std::for_each(std::execution::par_unseq, image_predefs.cbegin(), image_predefs.cend(), [&casc](const imagedat_info_t& img_def) {
-    std::cerr << img_def.id << ", ";  // TODO: rid this
+  std::for_each(std::execution::par_unseq, image_predefs.cbegin(), image_predefs.cend(), [&casc,&progress](const imagedat_info_t& img_def) {
+    //std::cerr << img_def.id << ", ";  // TODO: rid this
 
     std::vector<std::uint8_t> buffer;
     std::array<char, 64> filename;
@@ -39,7 +41,11 @@ void convert_graphics(Casc& casc) {
     if (casc.read_file(filename.data(), buffer)) {
       convert_anim(buffer, img_def);
     }
+    progress.increment_progress();
+    progress.display(std::cerr);
   });
+
+  std::cerr << "\n";
 
   auto clock_end = std::chrono::steady_clock::now();
   std::cerr << "Done. Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock_end - clock_start).count() << "ms" << std::endl;

@@ -158,6 +158,7 @@
     <ClCompile Include="image_predefs.cpp" />
     <ClCompile Include="lua_writer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="progress.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CascLib\CascLib_vs19.vcxproj">
@@ -172,6 +173,7 @@
     <ClInclude Include="convert_anim.h" />
     <ClInclude Include="image_predefs.h" />
     <ClInclude Include="lua_writer.h" />
+    <ClInclude Include="progress.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
