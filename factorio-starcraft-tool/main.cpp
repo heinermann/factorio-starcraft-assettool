@@ -9,46 +9,44 @@
 
 #include "casc.h"
 #include "progress.h"
+#include "stopwatch.h"
 
 #include "convert_anim.h"
 #include "image_predefs.h"
 
 void create_output_dirs() {
   constexpr const char* const out_dirs[] = {
-    "graphics",
+    "graphics/hd",
+    "graphics/low",
     "sound",
     "locale"
   };
 
   for (auto dir : out_dirs) {
-    std::filesystem::create_directory(dir);
+    std::filesystem::create_directories(dir);
   }
 }
 
-void convert_graphics(Casc& casc) {
-  auto clock_start = std::chrono::steady_clock::now();
+void convert_graphics(Casc& casc, bool use_hires) {
+  ProgressBar progress(use_hires ? "Hi-Res Graphics" : "Lo-Res Graphics", unsigned(image_predefs.size()));
+  Stopwatch stopwatch = Stopwatch::create();
 
-  std::cerr << "Converting Graphics\n";
-  ProgressBar progress("Hi-Res Graphics", image_predefs.size());
-
-  std::for_each(std::execution::par_unseq, image_predefs.cbegin(), image_predefs.cend(), [&casc,&progress](const imagedat_info_t& img_def) {
-    //std::cerr << img_def.id << ", ";  // TODO: rid this
-
+  const char* filepath = use_hires ? "anim\\main_%03d.anim" : "HD2\\anim\\main_%03d.anim";
+  const std::string outputpath = use_hires ? "graphics/hd" : "graphics/low";
+  std::for_each(std::execution::par_unseq, image_predefs.cbegin(), image_predefs.cend(), [&](const imagedat_info_t& img_def) {
     std::vector<std::uint8_t> buffer;
     std::array<char, 64> filename;
 
-    std::snprintf(filename.data(), filename.size(), "anim\\main_%03d.anim", img_def.id);
+    std::snprintf(filename.data(), filename.size(), filepath, img_def.id);
     if (casc.read_file(filename.data(), buffer)) {
-      convert_anim(buffer, img_def);
+      convert_anim(buffer, img_def, outputpath, !use_hires);
     }
     progress.increment_progress();
     progress.display(std::cerr);
   });
 
-  std::cerr << "\n";
-
-  auto clock_end = std::chrono::steady_clock::now();
-  std::cerr << "Done. Time elapsed: " << std::chrono::duration_cast<std::chrono::milliseconds>(clock_end - clock_start).count() << "ms" << std::endl;
+  stopwatch.stop();
+  std::cerr << "\nCompleted in " << stopwatch.milliseconds() << "ms" << std::endl;
 }
 
 int main(int argc, const char** argv) {
@@ -66,7 +64,8 @@ int main(int argc, const char** argv) {
   if (!casc.is_open()) return 2;
 
   create_output_dirs();
-  convert_graphics(casc);
+  convert_graphics(casc, false);
+  convert_graphics(casc, true);
 
   return 0;
 }

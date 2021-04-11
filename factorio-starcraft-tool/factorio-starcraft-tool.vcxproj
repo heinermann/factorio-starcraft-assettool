@@ -159,6 +159,7 @@
     <ClCompile Include="lua_writer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="progress.cpp" />
+    <ClCompile Include="stopwatch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CascLib\CascLib_vs19.vcxproj">
@@ -174,6 +175,7 @@
     <ClInclude Include="image_predefs.h" />
     <ClInclude Include="lua_writer.h" />
     <ClInclude Include="progress.h" />
+    <ClInclude Include="stopwatch.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

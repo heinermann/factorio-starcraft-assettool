@@ -428,8 +428,20 @@ std::unordered_map<int, std::vector<std::function<decltype(frames_convert_unproc
 using anymap = std::map<std::string, std::any>;
 using anyvector = std::vector<std::any>;
 
-void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_info_t& img_info) {
+void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_info_t& img_info, const std::string& out_dir, bool is_low) {
   anim_t anim = loadAnim(anim_data);
+  if (is_low) {
+    for (frame_t& frame : anim.framedata) {
+      frame.height /= 2;
+      frame.width /= 2;
+      frame.x /= 2;
+      frame.y /= 2;
+      frame.xoffs /= 2;
+      frame.yoffs /= 2;
+    }
+    anim.width /= 2;
+    anim.height /= 2;
+  }
   supplement_info_t anim_info = generate_supplemental_info(anim, img_info);
 
   std::unordered_map<std::string, CImg> output_sheets;
@@ -461,22 +473,23 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
   // Write output PNGs
   std::array<char, 128> filename;
   for (auto& sheet : output_sheets) {
-    std::snprintf(filename.data(), filename.size(), "graphics/main_%03d_%s.png", img_info.id, sheet.first.c_str());
+    std::snprintf(filename.data(), filename.size(), "%s/main_%03d_%s.png", out_dir.c_str(), img_info.id, sheet.first.c_str());
     zero_out_transparent(sheet.second);
     cimg_library::save_png(sheet.second, filename.data());
   }
 
   // Write lua info
-  std::snprintf(filename.data(), filename.size(), "__starcraft__/graphics/main_%03d_diffuse.png", img_info.id);
+  std::snprintf(filename.data(), filename.size(), "__starcraft__/%s/main_%03d_diffuse.png", out_dir.c_str(), img_info.id);
   
   anymap lua_data = {
     {"filename", std::string(filename.data())},
     {"size", anyvector{ anim_info.dst_frame_width, anim_info.dst_frame_height }},
-    {"scale", 0.5},
     {"frame_count", anim_info.framecount},
     {"line_length", anim_info.dst_cells_per_row}
   };
 
-  std::snprintf(filename.data(), filename.size(), "graphics/main_%03d.lua", img_info.id);
+  if (!is_low) lua_data["scale"] = 0.5;
+
+  std::snprintf(filename.data(), filename.size(), "%s/main_%03d.lua", out_dir.c_str(), img_info.id);
   write_lua_file(filename.data(), lua_data);
 }
