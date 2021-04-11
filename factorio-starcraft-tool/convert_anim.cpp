@@ -20,23 +20,22 @@
 using CImg = cimg_library::CImg<std::uint8_t>;
 using CImgList = cimg_library::CImgList<std::uint8_t>;
 
+struct rect_t {
+  int left, top, right, bottom;
+};
+
 struct supplement_info_t {
   imagedat_info_t img;
 
   unsigned framecount;
   unsigned dst_frame_width;
   unsigned dst_frame_height;
-  int frame_offset_x;
-  int frame_offset_y;
   unsigned dst_cells_per_row;
+  int margin_x, margin_y;
 
   // Turns stuff
   bool using_turns;
   unsigned rows_per_turn;
-};
-
-struct rect_t {
-  int left, top, right, bottom;
 };
 
 namespace cimg_library {
@@ -237,19 +236,24 @@ supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_
   result.framecount = anim.framedata.size();
   result.dst_frame_width = anim.width;
   result.dst_frame_height = anim.height;
-  result.frame_offset_x = 0;
-  result.frame_offset_y = 0;
   result.using_turns = img_info.gfx_turns_frames > 0;
+
+  rect_t margins = { anim.width, anim.height, 0, 0 };
 
   // Fixup graphic for negative offsets
   for (const frame_t& f : anim.framedata) {
-    result.dst_frame_width = std::max(result.dst_frame_width, unsigned(f.xoffs + f.width));
-    result.dst_frame_height = std::max(result.dst_frame_height, unsigned(f.yoffs + f.height));
-    result.frame_offset_x = std::max(result.frame_offset_x, -f.xoffs);
-    result.frame_offset_y = std::max(result.frame_offset_y, -f.yoffs);
+    margins.left = std::min(margins.left, int(f.xoffs));
+    margins.top = std::min(margins.top, int(f.yoffs));
+    margins.right = std::min(margins.right, int(anim.width - (f.xoffs + f.width)));
+    margins.bottom = std::min(margins.bottom, int(anim.height - (f.yoffs + f.height)));
   }
-  result.dst_frame_width += result.frame_offset_x*2;
-  result.dst_frame_height += result.frame_offset_y*2;
+
+  result.margin_x = std::min(margins.left, margins.right);
+  result.margin_y = std::min(margins.top, margins.bottom);
+
+  // *2 because extending the gfx to the left by an amount without balancing it on the right will misalign the graphic
+  result.dst_frame_width -= result.margin_x * 2;
+  result.dst_frame_height -= result.margin_y * 2;
 
   if (img_info.vertical_frames) {
     result.dst_cells_per_row = 1;
@@ -271,7 +275,7 @@ CImgList convert_to_img_list(const anim_t& anim, CImg& img, const supplement_inf
 
   for (int i = 0; i < info.framecount; ++i) {
     const frame_t& frame = anim.framedata[i];
-    draw_image(result(i), frame.xoffs + info.frame_offset_x, frame.yoffs + info.frame_offset_y, img, frame);
+    draw_image(result(i), frame.xoffs - info.margin_x, frame.yoffs - info.margin_y, img, frame);
   }
 
   return result;
