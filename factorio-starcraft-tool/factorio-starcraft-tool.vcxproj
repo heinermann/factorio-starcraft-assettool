@@ -158,6 +158,7 @@
     <ClCompile Include="image_predefs.cpp" />
     <ClCompile Include="lua_writer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="cimg_extensions.cpp" />
     <ClCompile Include="progress.cpp" />
     <ClCompile Include="stopwatch.cpp" />
   </ItemGroup>
@@ -174,6 +175,7 @@
     <ClInclude Include="convert_anim.h" />
     <ClInclude Include="image_predefs.h" />
     <ClInclude Include="lua_writer.h" />
+    <ClInclude Include="cimg_extensions.h" />
     <ClInclude Include="progress.h" />
     <ClInclude Include="stopwatch.h" />
   </ItemGroup>
