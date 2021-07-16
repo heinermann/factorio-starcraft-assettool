@@ -13,6 +13,7 @@
 
 #include "convert_anim.h"
 #include "image_predefs.h"
+#include "sound_predefs.h"
 
 void create_output_dirs() {
   constexpr const char* const out_dirs[] = {
@@ -49,6 +50,31 @@ void convert_graphics(Casc& casc, bool use_hires) {
   std::cerr << "\nCompleted in " << stopwatch.milliseconds() << "ms" << std::endl;
 }
 
+void extract_sounds(Casc& casc) {
+  ProgressBar progress("Sounds", unsigned(sound_predefs.size()));
+  Stopwatch stopwatch = Stopwatch::create();
+
+  std::for_each(std::execution::par_unseq, sound_predefs.cbegin(), sound_predefs.cend(), [&](const std::string& snd_def) {
+    std::vector<std::uint8_t> buffer;
+    if (casc.read_file(snd_def, buffer)) {
+      std::filesystem::create_directories(std::filesystem::path(snd_def).parent_path());
+
+      std::ofstream out(snd_def, std::ios::out | std::ios::binary);
+      if (!out.write(reinterpret_cast<char*>(buffer.data()), buffer.size())) {
+        std::cerr << "Failed to write " << snd_def << std::endl;
+      }
+    }
+    else {
+      std::cerr << "Failed to load " << snd_def << std::endl;
+    }
+    progress.increment_progress();
+    progress.display(std::cerr);
+  });
+
+  stopwatch.stop();
+  std::cerr << "\nCompleted in " << stopwatch.milliseconds() << "ms" << std::endl;
+}
+
 int main(int argc, const char** argv) {
   if (argc < 2) {
     std::cerr << "Requires an argument - StarCraft: Remastered installation directory." << std::endl;
@@ -66,6 +92,7 @@ int main(int argc, const char** argv) {
   create_output_dirs();
   convert_graphics(casc, false);
   convert_graphics(casc, true);
+  extract_sounds(casc);
 
   return 0;
 }
