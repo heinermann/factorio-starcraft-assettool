@@ -115,6 +115,7 @@ namespace cimg_library {
           nfilename ? nfilename : "(FILE*)");
       }
       png_set_compression_level(png_ptr, 1);
+      png_set_compression_strategy(png_ptr, PNG_Z_DEFAULT_NOFILTER_STRATEGY);
       png_set_compression_buffer_size(png_ptr, 32768);
       png_set_filter(png_ptr, PNG_FILTER_TYPE_BASE, PNG_FILTER_NONE);
       png_write_image(png_ptr, imgData);

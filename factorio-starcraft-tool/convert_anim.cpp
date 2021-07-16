@@ -84,13 +84,13 @@ void zero_out_transparent(CImg& img) {
 
 unsigned get_cells_per_row(const CImgList& imglist) {
   // something something graphics card texture width limitation for Factorio
-  return std::clamp(2048 / imglist(0).width(), 1, int(imglist.size()));
+  return std::clamp(4096 / imglist(0).width(), 1, int(imglist.size()));
 }
 
 unsigned get_cells_per_row(const supplement_info_t& info) {
   // something something graphics card texture width limitation for Factorio
   unsigned framecount = info.using_turns ? info.framecount / 17 : info.framecount;
-  return std::clamp(2048 / info.dst_frame_width, 1U, framecount);
+  return std::clamp(4096 / info.dst_frame_width, 1U, framecount);
 }
 
 supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_info_t& img_info, int first_frame, int last_frame) {
@@ -117,6 +117,8 @@ supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_
   result.dst_frame_width -= result.margin_x * 2;
   result.dst_frame_height -= result.margin_y * 2;
 
+  result.using_turns = img_info.gfx_turns_frames > 0;
+
   if (img_info.vertical_frames) {
     result.dst_cells_per_row = 1;
   }
@@ -125,7 +127,6 @@ supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_
   }
 
   // Get rotation data
-  result.using_turns = img_info.gfx_turns_frames > 0;
   if (result.using_turns) {
     result.rows_per_turn = unsigned(std::ceil(double(result.img.gfx_turns_frames) / result.dst_cells_per_row));
   }
