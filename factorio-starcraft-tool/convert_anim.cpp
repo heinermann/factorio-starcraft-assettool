@@ -218,6 +218,10 @@ CImgList create_shadows(const CImgList& input, const supplement_info_t& info) {
 
 void frames_convert_unprocessed(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
   output_sheets.emplace(name, img_list_to_sheet(frames, info));
+
+  if (name == "teamcolor") {
+    output_sheets["teamcolor"] = output_sheets["diffuse"] & output_sheets["teamcolor"];
+  }
 }
 
 void frames_convert_gfxturns(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
