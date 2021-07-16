@@ -144,8 +144,8 @@ CImgList convert_to_img_list(const anim_t& anim, CImg& img, const supplement_inf
   return result;
 }
 
-CImg img_list_to_sheet(const CImgList& frames, bool draw_indexes = false) {
-  unsigned cells_per_row = get_cells_per_row(frames);
+CImg img_list_to_sheet(const CImgList& frames, const supplement_info_t& info, bool draw_indexes = false) {
+  unsigned cells_per_row = info.dst_cells_per_row; // get_cells_per_row(frames);
   int frame_width = frames(0).width();
   int frame_height = frames(0).height();
 
@@ -217,7 +217,7 @@ CImgList create_shadows(const CImgList& input, const supplement_info_t& info) {
 
 
 void frames_convert_unprocessed(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
-  output_sheets.emplace(name, img_list_to_sheet(frames));
+  output_sheets.emplace(name, img_list_to_sheet(frames, info));
 }
 
 void frames_convert_gfxturns(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
@@ -255,7 +255,7 @@ struct frames_convert_extra  {
       extra_frames.push_back(frames(id));
     }
 
-    output_sheets.emplace(prefix + "_" + name, img_list_to_sheet(extra_frames));
+    output_sheets.emplace(prefix + "_" + name, img_list_to_sheet(extra_frames, info));
     if (name == "teamcolor") {
       output_sheets[prefix + "_teamcolor"] = output_sheets[prefix + "_diffuse"] & output_sheets[prefix + "_teamcolor"];
     }

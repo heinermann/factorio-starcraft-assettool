@@ -336,15 +336,15 @@ std::vector<imagedat_info_t> image_predefs = {
   //{341, false, true, true }, // Rhynadon (Badlands) Shadow
   {342, false, false, 12 }, // Bengalaas (Jungle)
   //{343, false, true, true }, // Bengalaas (Jungle) Shadow
-  {344, false, false, false, true }, // Vespene Geyser
+  {344, false, false, 0, true }, // Vespene Geyser
   //{345, false, false, false, true }, // Vespene Geyser2
-  {346, false, true, false, true }, // Vespene Geyser Shadow
-  {347, false, false, false, true }, // Mineral Field Type1
-  {348, false, true, false, true }, // Mineral Field Type1 Shadow
-  {349, false, false, false, true }, // Mineral Field Type2
-  {350, false, true, false, true }, // Mineral Field Type2 Shadow
-  {351, false, false, false, true }, // Mineral Field Type3
-  {352, false, true, false, true }, // Mineral Field Type3 Shadow
+  {346, false, true, 0, true }, // Vespene Geyser Shadow
+  {347, false, false, 0, true }, // Mineral Field Type1
+  {348, false, true, 0, true }, // Mineral Field Type1 Shadow
+  {349, false, false, 0, true }, // Mineral Field Type2
+  {350, false, true, 0, true }, // Mineral Field Type2 Shadow
+  {351, false, false, 0, true }, // Mineral Field Type3
+  {352, false, true, 0, true }, // Mineral Field Type3 Shadow
   {354, false, false }, // Zerg Beacon
   {355, true, false }, // Zerg Beacon Overlay
   {356, false, false }, // Terran Beacon
