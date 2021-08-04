@@ -51,6 +51,18 @@
     <ClCompile Include="sound_predefs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="grp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tile_predefs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="convert_tiles.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cimg_utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="image_predefs.h">
@@ -84,6 +96,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sound_predefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="grp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tile_predefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="convert_tiles.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cimg_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

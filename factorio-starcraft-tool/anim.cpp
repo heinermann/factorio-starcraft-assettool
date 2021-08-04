@@ -4,7 +4,6 @@
 #include <cstdio>
 
 #include "../simple-dds-image-reader/ddsreader.hpp"
-
 #include "../CImg/CImg.h"
 
 #define TEST(x) if(!(x)) throw std::exception(#x)

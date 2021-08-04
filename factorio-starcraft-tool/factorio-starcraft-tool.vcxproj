@@ -155,7 +155,10 @@
     <ClCompile Include="..\simple-dds-image-reader\ddsreader.cpp" />
     <ClCompile Include="anim.cpp" />
     <ClCompile Include="casc.cpp" />
+    <ClCompile Include="cimg_utils.cpp" />
     <ClCompile Include="convert_anim.cpp" />
+    <ClCompile Include="convert_tiles.cpp" />
+    <ClCompile Include="grp.cpp" />
     <ClCompile Include="image_predefs.cpp" />
     <ClCompile Include="lua_writer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -163,6 +166,7 @@
     <ClCompile Include="progress.cpp" />
     <ClCompile Include="sound_predefs.cpp" />
     <ClCompile Include="stopwatch.cpp" />
+    <ClCompile Include="tile_predefs.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CascLib\CascLib_vs19.vcxproj">
@@ -174,13 +178,17 @@
     <ClInclude Include="..\simple-dds-image-reader\ddsreader.hpp" />
     <ClInclude Include="anim.h" />
     <ClInclude Include="casc.h" />
+    <ClInclude Include="cimg_utils.h" />
     <ClInclude Include="convert_anim.h" />
+    <ClInclude Include="convert_tiles.h" />
+    <ClInclude Include="grp.h" />
     <ClInclude Include="image_predefs.h" />
     <ClInclude Include="lua_writer.h" />
     <ClInclude Include="cimg_extensions.h" />
     <ClInclude Include="progress.h" />
     <ClInclude Include="sound_predefs.h" />
     <ClInclude Include="stopwatch.h" />
+    <ClInclude Include="tile_predefs.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -12,6 +12,7 @@
 #include "stopwatch.h"
 
 #include "convert_anim.h"
+#include "convert_tiles.h"
 #include "image_predefs.h"
 #include "sound_predefs.h"
 
@@ -20,7 +21,9 @@ void create_output_dirs() {
     "graphics/hd",
     "graphics/low",
     "sound",
-    "locale"
+    "locale",
+    "graphics/tiles/hd",
+    "graphics/tiles/low"
   };
 
   for (auto dir : out_dirs) {
@@ -75,6 +78,35 @@ void extract_sounds(Casc& casc) {
   std::cerr << "\nCompleted in " << stopwatch.milliseconds() << "ms" << std::endl;
 }
 
+void rip_creep_tiles(Casc& casc, bool use_hires) {
+  const char* filepath = use_hires ? "TileSet\\AshWorld.dds.vr4" : "HD2\\TileSet\\AshWorld.dds.vr4";
+  const std::string outputpath = use_hires ? "graphics/tiles/hd" : "graphics/tiles/low";
+
+  std::vector<std::uint8_t> buffer;
+  if (casc.read_file(filepath, buffer)) {
+    convert_vr4_tiles(buffer, outputpath);
+  }
+  else {
+    std::cerr << "Failed to load " << filepath << std::endl;
+  }
+}
+
+void extract_tiles(Casc& casc) {
+  ProgressBar progress("Tiles", 2);
+  Stopwatch stopwatch = Stopwatch::create();
+
+  rip_creep_tiles(casc, false);
+  progress.increment_progress();
+  progress.display(std::cerr);
+
+  rip_creep_tiles(casc, true);
+  progress.increment_progress();
+  progress.display(std::cerr);
+
+  stopwatch.stop();
+  std::cerr << "\nCompleted in " << stopwatch.milliseconds() << "ms" << std::endl;
+}
+
 int main(int argc, const char** argv) {
   if (argc < 2) {
     std::cerr << "Requires an argument - StarCraft: Remastered installation directory." << std::endl;
@@ -90,6 +122,7 @@ int main(int argc, const char** argv) {
   if (!casc.is_open()) return 2;
 
   create_output_dirs();
+  extract_tiles(casc);
   convert_graphics(casc, false);
   convert_graphics(casc, true);
   extract_sounds(casc);
