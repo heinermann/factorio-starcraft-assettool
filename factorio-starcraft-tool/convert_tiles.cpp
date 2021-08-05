@@ -19,9 +19,14 @@ void convert_vr4_tiles(const std::vector<std::uint8_t>& vr4_data, const std::str
     BGRAtoRGBA(tile);
   }
 
-  std::array<char, 128> filename;
-  for (int i = 0; i < tiles.size(); ++i) {
-    std::snprintf(filename.data(), filename.size(), "%s/creep_%04d.png", out_dir.c_str(), i);
-    cimg_library::save_png(tiles[i], filename.data());
+  int width = tiles[0].width();
+  int height = tiles[0].height();
+
+  CImg main_tiles(width * 13, height, 1, 4);
+  for (int i = 0; i < 13; ++i) {
+    draw_image(main_tiles, width * i, 0, tiles[i], 0, 0, width, height);
   }
+
+  std::string main_path = out_dir + "/creep_main.png";
+  cimg_library::save_png(main_tiles, main_path.c_str());
 }
