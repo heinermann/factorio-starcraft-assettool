@@ -15,8 +15,8 @@
 CImg create_background(std::vector<CImg>& tiles) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<> rand_normal_tile(0, 8);
-  std::uniform_int_distribution<> rand_variation_tile(9, 12);
+  std::uniform_int_distribution<> rand_normal_tile(0, 6);
+  std::uniform_int_distribution<> rand_variation_tile(7, 12);
   std::uniform_real_distribution<> rand_variation_percent(0, 100);
 
   int width = tiles[0].width();
@@ -29,7 +29,7 @@ CImg create_background(std::vector<CImg>& tiles) {
       
       int attempts = 0;
       do {
-        tile_id = rand_variation_percent(gen) > 5.0 ? rand_normal_tile(gen) : rand_variation_tile(gen);
+        tile_id = rand_variation_percent(gen) >= 4.0 ? rand_normal_tile(gen) : rand_variation_tile(gen);
         attempts++;
       } while (tile_id == last_tile_id || attempts > 10);
       last_tile_id = tile_id;
