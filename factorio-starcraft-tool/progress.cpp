@@ -16,6 +16,12 @@ void ProgressBar::increment_progress() {
   current_value++;
 }
 
+void ProgressBar::inc_show_progress() {
+  increment_progress();
+  display(std::cerr);
+}
+
+
 void ProgressBar::display(std::ostream& ostream) {
   std::lock_guard guard(progress_mutex);
   ostream << '\r';

@@ -51,8 +51,8 @@ CImg create_tilesheet(std::vector<CImg>& tiles) {
   return result;
 }
 
-void convert_vr4_tiles(const std::vector<std::uint8_t>& vr4_data, const std::string& out_dir) {
-  std::vector<CImg> tiles = loadGrp(vr4_data, vr4_creep_tiles);
+void convert_vr4_tiles(const std::vector<std::uint8_t>& data, const std::string& out_dir) {
+  std::vector<CImg> tiles = loadGrp(data, vr4_creep_tiles);
 
   for (CImg& tile : tiles) {
     BGRAtoRGBA(tile);
@@ -65,4 +65,15 @@ void convert_vr4_tiles(const std::vector<std::uint8_t>& vr4_data, const std::str
   CImg bg_tiles = create_background(tiles);
   std::string bg_path = out_dir + "/creep_background.png";
   cimg_library::save_png(bg_tiles, bg_path.c_str());
+}
+
+void convert_icons(const std::vector<std::uint8_t>& data, const std::string& out_dir) {
+  std::vector<CImg> icons = loadGrp(data, vr4_creep_tiles);
+
+  for (size_t i = 0; i < icons.size(); ++i) {
+    BGRAtoRGBA(icons[i]);
+
+    std::string path = out_dir + "/" + std::to_string(i) + ".png";
+    cimg_library::save_png(icons[i], path.c_str());
+  }
 }

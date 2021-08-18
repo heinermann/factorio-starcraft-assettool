@@ -23,7 +23,8 @@ void create_output_dirs() {
     "sound",
     "locale",
     "graphics/tiles/hd",
-    "graphics/tiles/low"
+    "graphics/tiles/low",
+    "graphics/icons"
   };
 
   for (auto dir : out_dirs) {
@@ -45,8 +46,7 @@ void convert_graphics(Casc& casc, bool use_hires) {
     if (casc.read_file(filename.data(), buffer)) {
       convert_anim(buffer, img_def, outputpath, !use_hires);
     }
-    progress.increment_progress();
-    progress.display(std::cerr);
+    progress.inc_show_progress();
   });
 
   stopwatch.stop();
@@ -70,8 +70,7 @@ void extract_sounds(Casc& casc) {
     else {
       std::cerr << "Failed to load " << snd_def << std::endl;
     }
-    progress.increment_progress();
-    progress.display(std::cerr);
+    progress.inc_show_progress();
   });
 
   stopwatch.stop();
@@ -91,17 +90,31 @@ void rip_creep_tiles(Casc& casc, bool use_hires) {
   }
 }
 
+void rip_icons(Casc& casc) {
+  const char* filepath = "game\\icons.dds.grp";
+  const std::string outputpath = "graphics/icons";
+
+  std::vector<std::uint8_t> buffer;
+  if (casc.read_file(filepath, buffer)) {
+    convert_icons(buffer, outputpath);
+  }
+  else {
+    std::cerr << "Failed to load " << filepath << std::endl;
+  }
+}
+
 void extract_tiles(Casc& casc) {
-  ProgressBar progress("Tiles", 2);
+  ProgressBar progress("Tiles and Icons", 3);
   Stopwatch stopwatch = Stopwatch::create();
 
   rip_creep_tiles(casc, false);
-  progress.increment_progress();
-  progress.display(std::cerr);
+  progress.inc_show_progress();
 
   rip_creep_tiles(casc, true);
-  progress.increment_progress();
-  progress.display(std::cerr);
+  progress.inc_show_progress();
+
+  rip_icons(casc);
+  progress.inc_show_progress();
 
   stopwatch.stop();
   std::cerr << "\nCompleted in " << stopwatch.milliseconds() << "ms" << std::endl;

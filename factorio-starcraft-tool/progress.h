@@ -9,6 +9,7 @@ public:
   ProgressBar(const std::string& name, unsigned max_value, char fill_chr = '|', unsigned width = 100);
 
   void increment_progress();
+  void inc_show_progress();
   void display(std::ostream& ostream);
 
 private:
