@@ -68,7 +68,7 @@ void convert_vr4_tiles(const std::vector<std::uint8_t>& data, const std::string&
 }
 
 void convert_icons(const std::vector<std::uint8_t>& data, const std::string& out_dir) {
-  std::vector<CImg> icons = loadGrp(data, vr4_creep_tiles);
+  std::vector<CImg> icons = loadGrp(data);
 
   for (size_t i = 0; i < icons.size(); ++i) {
     BGRAtoRGBA(icons[i]);

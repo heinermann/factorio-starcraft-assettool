@@ -10,7 +10,7 @@
 
 using CImg = cimg_library::CImg<std::uint8_t>;
 
-std::vector<CImg> loadGrp(const std::vector<std::uint8_t>& data, const std::vector<int>& requested_indices) {
+std::vector<CImg> loadGrp(const std::vector<std::uint8_t>& data, const std::optional<std::vector<int>>& requested_indices) {
   thread_local static std::vector<std::uint8_t> dds_work_buffer;
   TEST(data.size() > sizeof(GROUP) + sizeof(FRAME) + 1);
 
@@ -31,13 +31,13 @@ std::vector<CImg> loadGrp(const std::vector<std::uint8_t>& data, const std::vect
 
   std::vector<CImg> result;
 
-  for (int i = 0, r = 0; i < header->wFrames && read_offset < header->dwFlesize && r < requested_indices.size(); ++i) {
+  for (int i = 0, r = 0; i < header->wFrames && read_offset < header->dwFlesize && (!requested_indices || r < requested_indices->size()); ++i) {
     frame = read_ptr(frame);
     
     const std::uint8_t* data_begin = &data[read_offset];
     read_offset += frame->size;
 
-    if (i < requested_indices[r]) continue;
+    if (requested_indices && i < requested_indices.value()[r]) continue;
     ++r;
 
     dds_work_buffer.clear();

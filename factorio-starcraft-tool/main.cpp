@@ -24,7 +24,8 @@ void create_output_dirs() {
     "locale",
     "graphics/tiles/hd",
     "graphics/tiles/low",
-    "graphics/icons"
+    "graphics/icons",
+    "graphics/cmdicons"
   };
 
   for (auto dir : out_dirs) {
@@ -103,8 +104,21 @@ void rip_icons(Casc& casc) {
   }
 }
 
+void rip_cmdicons(Casc& casc) {
+  const char* filepath = "unit\\cmdicons\\cmdicons.dds.grp";
+  const std::string outputpath = "graphics/cmdicons";
+
+  std::vector<std::uint8_t> buffer;
+  if (casc.read_file(filepath, buffer)) {
+    convert_icons(buffer, outputpath);
+  }
+  else {
+    std::cerr << "Failed to load " << filepath << std::endl;
+  }
+}
+
 void extract_tiles(Casc& casc) {
-  ProgressBar progress("Tiles and Icons", 3);
+  ProgressBar progress("Tiles and Icons", 4);
   Stopwatch stopwatch = Stopwatch::create();
 
   rip_creep_tiles(casc, false);
@@ -114,6 +128,9 @@ void extract_tiles(Casc& casc) {
   progress.inc_show_progress();
 
   rip_icons(casc);
+  progress.inc_show_progress();
+
+  rip_cmdicons(casc);
   progress.inc_show_progress();
 
   stopwatch.stop();

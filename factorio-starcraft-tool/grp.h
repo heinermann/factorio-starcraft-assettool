@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <vector>
+#include <optional>
 
 #include "../CImg/CImg.h"
 
@@ -17,4 +18,4 @@ struct GROUP {
   std::uint16_t wFlags;
 };
 
-std::vector<cimg_library::CImg<std::uint8_t>> loadGrp(const std::vector<std::uint8_t>& data, const std::vector<int>& requested_indices);
+std::vector<cimg_library::CImg<std::uint8_t>> loadGrp(const std::vector<std::uint8_t>& data, const std::optional<std::vector<int>>& requested_indices = std::nullopt);
