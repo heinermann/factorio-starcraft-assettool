@@ -68,12 +68,40 @@ void convert_vr4_tiles(const std::vector<std::uint8_t>& data, const std::string&
 }
 
 void convert_icons(const std::vector<std::uint8_t>& data, const std::string& out_dir) {
-  std::vector<CImg> icons = loadGrp(data);
+  std::vector<CImg> icons = loadGrp(data, icon_indices);
 
   for (size_t i = 0; i < icons.size(); ++i) {
     BGRAtoRGBA(icons[i]);
 
     std::string path = out_dir + "/" + std::to_string(i) + ".png";
     cimg_library::save_png(icons[i], path.c_str());
+  }
+}
+
+void apply_color(CImg& img, int tint_r, int tint_g, int tint_b) {
+  cimg_forXY(img, x, y) {
+    img(x, y, 0, 0) = std::uint8_t(std::clamp(tint_r * img(x, y, 0, 0) / 131, 0, 255));
+    img(x, y, 0, 1) = std::uint8_t(std::clamp(tint_g * img(x, y, 0, 1) / 130, 0, 255));
+    img(x, y, 0, 2) = std::uint8_t(std::clamp(tint_b * img(x, y, 0, 2) / 131, 0, 255));
+  }
+}
+
+void convert_cmdicons(const std::vector<std::uint8_t>& data, const std::string& out_dir) {
+  std::vector<CImg> icons = loadGrp(data, cmdicon_indices);
+
+  for (size_t i = 0; i < icons.size(); ++i) {
+    BGRAtoRGBA(icons[i]);
+
+    CImg fixed(128, 128, 1, 4, 0);
+    int x = (128 - icons[i].width()) / 2;
+    int y = (128 - icons[i].height()) / 2;
+
+    draw_image(fixed, x, y, icons[i], 0, 0, icons[i].width(), icons[i].height());
+
+    apply_color(fixed, 255, 255, 57);
+    zero_out_transparent(fixed);
+
+    std::string path = out_dir + "/" + std::to_string(cmdicon_indices[i]) + ".png";
+    cimg_library::save_png(fixed, path.c_str());
   }
 }

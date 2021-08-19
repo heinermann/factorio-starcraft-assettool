@@ -110,7 +110,7 @@ void rip_cmdicons(Casc& casc) {
 
   std::vector<std::uint8_t> buffer;
   if (casc.read_file(filepath, buffer)) {
-    convert_icons(buffer, outputpath);
+    convert_cmdicons(buffer, outputpath);
   }
   else {
     std::cerr << "Failed to load " << filepath << std::endl;
