@@ -9,3 +9,4 @@ CImg get_rotate90_black(const CImg& img);
 void draw_image(CImg& dst, int dst_x, int dst_y, CImg& src, int src_x, int src_y, int width, int height);
 void BGRAtoRGBA(CImg& img);
 void zero_out_transparent(CImg& img);
+void add_alpha_px(CImg& img, int x, int y, std::uint8_t value);

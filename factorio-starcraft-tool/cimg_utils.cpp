@@ -1,5 +1,7 @@
 #include "cimg_utils.h"
 
+#include <algorithm>
+
 CImg get_rotate90_black(const CImg& img) {
   CImg result(img.height(), img.width(), 1, 2);
   int hm1 = img.height() - 1;
@@ -35,5 +37,11 @@ void zero_out_transparent(CImg& img) {
 
     for (int c = 0; c < img.spectrum() - 1; ++c)
       img(x, y, 0, c) = 0;
+  }
+}
+
+void add_alpha_px(CImg& img, int x, int y, std::uint8_t value) {
+  if (x >= 0 && y >= 0 && x < img.width() && y < img.height()) {
+    img(x, y, 0, 3) = std::min(img(x, y, 0, 3) + value, 255);
   }
 }
