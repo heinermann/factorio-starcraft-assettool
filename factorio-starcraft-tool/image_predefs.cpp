@@ -251,10 +251,10 @@ std::vector<imagedat_info_t> image_predefs = {
   {256, false, false, 1 }, // Vulture
   //{257, false, true, true }, // Vulture Shadow
   {258, false, false }, // Spider Mine
-  {259, false, true }, // Spider Mine Shadow
+  //{259, false, true }, // Spider Mine Shadow
   {260, false, false, 0, false, true}, // Science Vessel (Base)
   {261, false, false, 1 }, // Science Vessel (Turret)
-  {262, false, true }, // Science Vessel Shadow
+  //{262, false, true }, // Science Vessel Shadow
   {263, false, false }, // Terran Academy
   {264, false, false }, // Academy Overlay
   //{265, false, true }, // Academy Shadow

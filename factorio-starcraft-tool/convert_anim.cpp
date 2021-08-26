@@ -181,19 +181,23 @@ CImgList create_shadows(const CImgList& input, const supplement_info_t& info) {
   return std::move(result);
 }
 
-CImgList create_depth_shadows(const CImgList& input, const supplement_info_t& info) {
+// RED: x normal (0 = -90, 255 = +90, 128 = camera)
+// GREEN: depth (0 = farthest from camera, 255 = closest to camera)
+// BLUE: z normal (51 = completely vertical, 255 = completely flat, 0-50 = under-side)
+// ALPHA: Actual transparency from diffuse
+CImgList create_depth_shadows(const CImgList& depth_normal, const supplement_info_t& info) {
   const double sin45 = std::sin(std::numbers::pi / 4);
-  const double tan1 = std::tan(1);
+  const double tan60 = 0.7;
 
   CImgList result;
-  for (const CImg& img : input) {
+  for (const CImg& img : depth_normal) {
     CImg shadow(img.width()*3, img.height(), 1, 4, 0);
 
-    // Get the bottom of the sprite
+    // Get the bottom of the sprite (TODO: probably not necessary)
     int final_y = 0;
     for (int y = img.height() - 1; y > 0 && final_y == 0; y--) {
       cimg_forX(img, x) {
-        if (img(x, y, 0, 3) != 0) {
+        if (img(x, y, 0, 1) != 0) {
           final_y = y;
           break;
         }
@@ -201,45 +205,37 @@ CImgList create_depth_shadows(const CImgList& input, const supplement_info_t& in
     }
 
     // Arbitrary scale, literally no idea how this is determined.
-    const double dist_scale = std::max(final_y, img.width());// img.width() / 256.0;
+    const double dist_scale = std::max(img.height(), img.width());// img.width() / 256.0;
 
     cimg_forXY(img, x, y) {
-      // Project pixel onto real space (x, y, z) using depth map, assuming viewport is 45deg
-      int a = img(x, y, 0, 3);
-      if (a == 0) continue;
-      //if (a <= 52) continue;
+      if (img(x, y, 0, 3) == 0) continue;
 
+      // Project pixel onto real space (x, y, z) using depth map, assuming viewport is 45deg
       int spr_y = final_y - y;
 
-      double d = (255.0 - a)/255.0 * dist_scale;
+      double d = (255.0 - img(x, y, 0, 1))/255.0 * dist_scale;
       double d_inv = 1.0 * dist_scale - d;
-      double y_calc = spr_y - final_y / 2.0;
-      //double d_corrected = std::sqrt(d * d - y_calc * y_calc);
 
       double px = x;
       double py = (spr_y + d) * sin45;
       double pz = std::sqrt(d_inv * d_inv + 1.0 * spr_y * spr_y);
 
       // Project shadow in real space from the west (z = 0)
-      int sx = pz + px;// (pz * tan1) + px;
+      int sx = px + pz / tan60;
       int sy = py;
-      //int num_px_x = std::ceil(pz * 1.4) - std::floor((pz - 1) * 1.4);
 
       // Convert back to 2D
       int fx = sx;
-      // py = (y + d) * sin45
-      // py = y * sin45 + d * sin45
-      // y * sin45 = d * sin45 - py
-      // y = d - py / sin45
-      int fy = shadow.height() - 1 - sy * sin45;
+      int fy = final_y - 1 - sy * sin45;
 
       // Fill the spaces the pixel probably would have covered with shadow
-      for (int ix = std::floor(pz - 1) + px; ix <= std::ceil(pz) + px; ++ix) {
-        add_alpha_px(shadow, ix, fy, 255);
-        add_alpha_px(shadow, ix - 1, fy, 64);
-        add_alpha_px(shadow, ix + 1, fy, 64);
-        add_alpha_px(shadow, ix, fy - 1, 64);
-        add_alpha_px(shadow, ix, fy + 1, 64);
+      for (int ix = std::floor((pz - 1) / tan60) + px; ix <= std::ceil(pz / tan60) + px; ++ix) {
+        double alpha_scale = img(x, y, 0, 3) / 255.0;
+        add_alpha_px(shadow, ix, fy, 255 * alpha_scale);
+        add_alpha_px(shadow, ix - 1, fy, 64 * alpha_scale);
+        add_alpha_px(shadow, ix + 1, fy, 64 * alpha_scale);
+        add_alpha_px(shadow, ix, fy - 1, 64 * alpha_scale);
+        add_alpha_px(shadow, ix, fy + 1, 64 * alpha_scale);
       }
     }
     result.insert(std::move(shadow));
@@ -254,7 +250,7 @@ void frames_convert_unprocessed(const std::string& name, const CImgList& frames,
   if (name == "teamcolor") {
     output_sheets["teamcolor"] = output_sheets["diffuse"] & output_sheets["teamcolor"];
   }
-  else if (name == "ao_depth" && info.use_depth) {
+  else if (name == "depth_normal" && info.use_depth) {
     CImgList shadow_frames = create_depth_shadows(frames, info);
     output_sheets["dshadow"] = img_list_to_sheet(shadow_frames, info);
   }
@@ -335,34 +331,39 @@ std::unordered_map<int, std::vector<std::function<decltype(frames_convert_unproc
 using anymap = std::map<std::string, std::any>;
 using anyvector = std::vector<std::any>;
 
-void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_info_t& img_info, const std::string& out_dir, bool is_low) {
-  anim_t anim = loadAnim(anim_data);
-  if (is_low) {
-    for (frame_t& frame : anim.framedata) {
-      frame.height /= 2;
-      frame.width /= 2;
-      frame.x /= 2;
-      frame.y /= 2;
-      frame.xoffs /= 2;
-      frame.yoffs /= 2;
+void create_depth_normal(anim_t &anim) {
+  std::unordered_map<std::string, CImg> sheet_lookup(anim.sheets.begin(), anim.sheets.end());
+  if (!sheet_lookup.contains("ao_depth") || !sheet_lookup.contains("normal")) return;
+
+  const CImg& ao_depth = sheet_lookup.at("ao_depth");
+  const CImg& diffuse = sheet_lookup.at("diffuse");
+  CImg& normal = sheet_lookup.at("normal");
+
+  // Combine the depth with normal and diffuse alpha
+  cimg_forXY(ao_depth, x, y) {
+    if (diffuse(x, y, 0, 3) < 32) {
+      normal(x, y, 0, 0) = 0;
+      normal(x, y, 0, 1) = 0;
+      normal(x, y, 0, 2) = 0;
+      normal(x, y, 0, 3) = 0;
     }
-    anim.width /= 2;
-    anim.height /= 2;
+    else {
+      normal(x, y, 0, 1) = ao_depth(x, y, 0, 3);
+      normal(x, y, 0, 2) = normal(x, y, 0, 3);
+      normal(x, y, 0, 3) = diffuse(x, y, 0, 3);
+    }
   }
 
-  supplement_info_t anim_info = generate_supplemental_info(anim, img_info, 0, anim.framedata.size() - 1);
+  anim.sheets.push_back(std::make_pair(std::string("depth_normal"), normal));
+}
 
+std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imagedat_info_t& img_info, const supplement_info_t& anim_info) {
   std::unordered_map<std::string, CImg> output_sheets;
-
-  // Convert to lists
   for (auto& sheet : anim.sheets) {
     BGRAtoRGBA(sheet.second);
 
-    if (sheet.first == "ao_depth") {
-      const CImg& diffuse = std::find_if(anim.sheets.begin(), anim.sheets.end(), [](const auto& it) { return it.first == "diffuse"; })->second;
-      cimg_forXY(diffuse, x, y) {
-        sheet.second(x, y, 0, 3) = std::min(sheet.second(x, y, 0, 3), diffuse(x, y, 0, 3));
-      }
+    if (sheet.first == "ao_depth" || sheet.first == "normal") {
+      continue;
     }
 
     CImgList frames = convert_to_img_list(anim, sheet.second, anim_info);
@@ -380,6 +381,31 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
       }
     }
   }
+
+  return output_sheets;
+}
+
+void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_info_t& img_info, const std::string& out_dir, bool is_low) {
+  anim_t anim = loadAnim(anim_data);
+  if (is_low) {
+    for (frame_t& frame : anim.framedata) {
+      frame.height /= 2;
+      frame.width /= 2;
+      frame.x /= 2;
+      frame.y /= 2;
+      frame.xoffs /= 2;
+      frame.yoffs /= 2;
+    }
+    anim.width /= 2;
+    anim.height /= 2;
+  }
+
+  supplement_info_t anim_info = generate_supplemental_info(anim, img_info, 0, anim.framedata.size() - 1);
+
+  create_depth_normal(anim);
+
+  // Convert to lists
+  std::unordered_map<std::string, CImg> output_sheets = convert_to_output(anim, img_info, anim_info);
 
   // Write output PNGs
   std::array<char, 128> filename;

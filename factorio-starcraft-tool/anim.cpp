@@ -51,7 +51,8 @@ anim_t loadAnim(const std::vector<std::uint8_t>& data) {
     if (std::strncmp(header->layernames[i], "diffuse", 32) != 0 &&
       std::strncmp(header->layernames[i], "teamcolor", 32) != 0 &&
       std::strncmp(header->layernames[i], "emissive", 32) != 0 &&
-      std::strncmp(header->layernames[i], "ao_depth", 32) != 0) {
+      std::strncmp(header->layernames[i], "ao_depth", 32) != 0 &&
+      std::strncmp(header->layernames[i], "normal", 32) != 0) {
       continue;
     }
 
