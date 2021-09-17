@@ -412,7 +412,7 @@ std::vector<imagedat_info_t> image_predefs = {
   //{421, true, false, true }, // FlameThrower    // TODO: WTF?
   {422, true, false }, // Longbolt/Gemini Missiles Trail
   {423, false, false }, // Burrowing Dust
-  {424, true, false }, // Shield Overlay
+  {424, true, false, 4 }, // Shield Overlay
   {426, true, false }, // Double Explosion
   {427, true, false }, // Phase Disruptor Hit
   {428, true, false }, // Nuclear Missile Death
