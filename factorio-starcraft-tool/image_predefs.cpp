@@ -540,32 +540,6 @@ std::vector<imagedat_info_t> image_predefs = {
   //{557, true, false }, // Hallucination Death1   // TODO: WTF?
   //{558, true, false }, // Hallucination Death2
   //{559, true, false }, // Hallucination Death3
-//  {561, true, false }, // Selection Circle (22pixels)
-//  {562, true, false }, // Selection Circle (32pixels)
-//  {563, true, false }, // Selection Circle (48pixels)
-//  {564, true, false }, // Selection Circle (62pixels)
-//  {565, true, false }, // Selection Circle (72pixels)
-//  {566, true, false }, // Selection Circle (94pixels)
-//  {567, true, false }, // Selection Circle (110pixels)
-//  {568, true, false }, // Selection Circle (122pixels)
-//  {569, true, false }, // Selection Circle (146pixels)
-//  {570, true, false }, // Selection Circle (224pixels)
-//  {571, true, false }, // Selection Circle Dashed (22pixels)
-//  {572, true, false }, // Selection Circle Dashed (32pixels)
-//  {573, true, false }, // Selection Circle Dashed (48pixels)
-//  {574, true, false }, // Selection Circle Dashed (62pixels)
-//  {575, true, false }, // Selection Circle Dashed (72pixels)
-//  {576, true, false }, // Selection Circle Dashed (94pixels)
-//  {577, true, false }, // Selection Circle Dashed (110pixels)
-//  {578, true, false }, // Selection Circle Dashed (122pixels)
-//  {579, true, false }, // Selection Circle Dashed (146pixels)
-//  {580, true, false }, // Selection Circle Dashed (224pixels)
-//  {582, false, false }, // Map Revealer
-//  {584, true, false }, // Psi Field1 (Right Upper)
-//  {585, true, false }, // Psi Field1 (Right Lower)
-//  {586, true, false }, // Psi Field2 (Right Upper)
-//  {587, true, false }, // Psi Field2 (Right Lower)
-//  {588, false, false }, // Start Location
 //  {589, false, false }, // 2/38 Ash
 //  {590, false, true }, // 2/38 Ash Shadow
 //  {591, false, false }, // 2/39 Ash
