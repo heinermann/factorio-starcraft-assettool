@@ -186,6 +186,27 @@ void frames_convert_unprocessed(const std::string& name, const CImgList& frames,
   }
 }
 
+// Function to split the sheets that are too large
+void split_sheet_result(std::unordered_map<std::string, CImg>& sheets, const supplement_info_t& info) {
+  for (auto& [name, sheet] : sheets) {
+    if (sheet.height() <= 8192) continue;
+
+    int vframes_per_page = 8192 / info.dst_frame_height;
+    int page_height = vframes_per_page * info.dst_frame_height;
+    int width = sheet.width();
+
+    for (int y = 0, i = 1; y < sheet.height(); y += page_height, ++i) {
+      int new_height = std::min(sheet.height() - y, page_height);
+      CImg new_img(width, new_height, 1, sheet.spectrum(), 0);
+
+      draw_image(new_img, 0, 0, sheet, 0, y, width, new_height);
+      sheets.emplace(name + "_" + std::to_string(i), std::move(new_img));
+    }
+
+    sheets.erase(name);
+  }
+}
+
 void frames_convert_gfxturns(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
   CImgList turn_frames = convert_to_gfxturns(frames, info);
   output_sheets.emplace(name, img_list_to_turns_sheet(turn_frames, info));
@@ -311,6 +332,8 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
       }
     }
   }
+
+  split_sheet_result(output_sheets, anim_info);
 
   return output_sheets;
 }

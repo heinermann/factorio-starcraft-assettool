@@ -15,9 +15,10 @@ CImg get_rotate90_black(const CImg& img) {
 }
 
 void draw_image(CImg& dst, int dst_x, int dst_y, CImg& src, int src_x, int src_y, int width, int height) {
+  int channels = std::min(dst.spectrum(), src.spectrum());
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x) {
-      for (int c = 0; c < 4; ++c) {
+      for (int c = 0; c < channels; ++c) {
         dst(dst_x + x, dst_y + y, 0, c) = src(src_x + x, src_y + y, 0, c);
       }
     }
