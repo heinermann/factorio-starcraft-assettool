@@ -2,328 +2,214 @@
 
 std::vector<imagedat_info_t> image_predefs = {
   imagedat_info_t
+  {210, true, false, 0, false }, // Warp Texture
   {0, false, false, 5 }, // Scourge
-  //{1, false, true, true }, // Scourge Shadow
   {2, false, false, 0, false }, // Scourge Birth
   {3, false, false, 0, false }, // Scourge Death
   {4, true, false, 0, false }, // Scourge Explosion
   {5, false, false, 12 }, // Broodling
-  //{6, false, true, true }, // Broodling Shadow
   {7, false, false }, // Broodling Remnants
   {8, false, false, 8 }, // Infested Terran
-  //{9, false, true, true }, // Infested Terran Shadow
   {10, true, false }, // Infested Terran Explosion
   {11, false, false, 0, false }, // Guardian Cocoon
-  // {12, false, true }, // Guardian Cocoon Shadow
   {13, false, false, 8 }, // Defiler
-  //{14, false, true, true }, // Defiler Shadow
   {15, false, false, 0, false }, // Defiler Birth
   {16, false, false }, // Defiler Remnants
   {17, false, false, 10 }, // Drone
-  //{18, false, true, true }, // Drone Shadow
   {19, false, false, 0, false }, // Drone Birth
   {20, false, false }, // Drone Remnants
   {21, false, false, 0, false }, // Egg
-  //{22, false, true }, // Egg Shadow
   {23, false, false }, // Egg Spawn
   {24, false, false, 0, false }, // Egg Remnants
   {25, false, false, 7 }, // Guardian
-  //{26, false, true, true }, // Guardian Shadow
   //{27, false, false }, // Guardian Birth
   {28, false, false, 0, false }, // Guardian Death
   {29, false, false, 12 }, // Hydralisk
-  //{30, false, true, true }, // Hydralisk Shadow
   {31, false, false, 0, false }, // Hydralisk Birth
   {32, false, false }, // Hydralisk Remnants
   {33, false, false, 16 }, // Infested Kerrigan
-  //{34, false, true, true }, // Infested Kerrigan Shadow
   {35, false, false, 7 }, // Needle Spines
   {36, false, false, 5 }, // Larva
   {37, false, false }, // Larva Remnants
   {38, false, false, 5 }, // Mutalisk
-  //{39, false, true, true }, // Mutalisk Shadow
   {40, false, false, 0, false }, // Mutalisk Birth
   {41, false, false, 0, false }, // Mutalisk Death
   {42, false, false, 4 }, // Overlord
-  //{43, false, true, true }, // Overlord Shadow
   {44, false, false, 0, false }, // Overlord Birth
   {45, false, false, 0, false }, // Overlord Death
   {46, false, false, 11 }, // Queen
-  //{47, false, true, true }, // Queen Shadow
   {48, false, false, 0, false }, // Queen Death
   {49, false, false, 0, false }, // Queen Birth
   {50, false, false, 15 }, // Ultralisk
-  //{51, false, true, true }, // Ultralisk Shadow
   {52, false, false, 0, false }, // Ultralisk Birth
   {53, false, false }, // Ultralisk Remnants
   {54, false, false, 12 }, // Zergling
-  //{55, false, true, true }, // Zergling Shadow
   {56, false, false, 0, false }, // Zergling Birth
   {57, false, false }, // Zergling Remnants
   {58, false, false, 0, false }, // Zerg Air Death Explosion (Large)
   {59, false, false, 0, false }, // Zerg Air Death Explosion (Small)
   {60, false, false, 0, false }, // Zerg Building Explosion
   {61, false, false, 0, false }, // Cerebrate
-  //{62, false, true }, // Cerebrate Shadow
   {63, false, false, 0, false }, // Infested Command Center
   {64, false, false, 0, false }, // Spawning Pool
-  //{65, false, true }, // Spawning Pool Shadow
   {66, false, false, 0, false }, // Evolution Chamber
-  //{67, false, true }, // Evolution Chamber Shadow
   {68, false, false, 0, false }, // Creep Colony
-  //{69, false, true }, // Creep Colony Shadow
   {70, false, false, 0, false }, // Hatchery
-  //{71, false, true }, // Hatchery Shadow
   {72, false, false, 0, false }, // Hive
-  //{73, false, true }, // Hive Shadow
   {74, false, false, 0, false }, // Lair
-  //{75, false, true }, // Lair Shadow
   {76, false, false, 0, false }, // Sunken Colony
-  //{77, false, true }, // Sunken Colony Shadow
   {78, false, false, 0, false }, // Mature Chrysalis
-  //{79, false, true }, // Mature Chrysalis Shadow
   {80, false, false, 0, false }, // Greater Spire
-  //{81, false, true }, // Greater Spire Shadow
   {82, false, false, 0, false }, // Defiler Mound
-  //{83, false, true }, // Defiler Mound Shadow
   {84, false, false, 0, false }, // Queen's Nest
-  //{85, false, true }, // Queen Nest Shadow
   {86, false, false, 0, false }, // Nydus Canal
-  //{87, false, true }, // Nydus Canal Shadow
   {88, false, false, 0, false }, // Overmind With Shell
   {89, false, false, 0, false }, // Overmind Remnants
   //{90, false, false }, // Overmind Without Shell
   {91, false, false, 0, false }, // Ultralisk Cavern
-  //{92, false, true }, // Ultralisk Cavern Shadow
   {93, false, false, 0, false }, // Extractor
-  //{94, false, true }, // Extractor Shadow
   {95, false, false, 0, false }, // Hydralisk Den
-  //{96, false, true }, // Hydralisk Den Shadow
   {97, false, false, 0, false }, // Spire
-  //{98, false, true }, // Spire Shadow
   {99, false, false, 0, false }, // Spore Colony
-  //{100, false, true }, // Spore Colony Shadow
   {101, false, false, 0, false }, // Infested Command Center Overlay
   {102, false, false, 0, false }, // Zerg Construction (Large)
   //{103, false, false }, // Zerg Building Morph
   //{104, false, false }, // Zerg Construction (Medium)
   //{105, false, false }, // Zerg Construction (Small)
-  //{106, false, true }, // Zerg Building Construction Shadow
   {107, false, false }, // Zerg Building Spawn (Small)
   {108, false, false }, // Zerg Building Spawn (Medium)
   {109, false, false }, // Zerg Building Spawn (Large)
   {110, false, false }, // Zerg Building Rubble (Small)
   {111, false, false }, // Zerg Building Rubble (Large)
   {112, false, false, 1 }, // Carrier
-  //{113, false, true, true }, // Carrier Shadow
   {114, true, false, 1 }, // Carrier Engines
   {116, false, false, 2 }, // Interceptor
-  //{117, false, true, true }, // Interceptor Shadow
   {118, false, false, 1 }, // Shuttle
-  //{119, false, true, true }, // Shuttle Shadow
   {120, true, false, 2 }, // Shuttle Engines
   {122, false, false, 24 }, // Dragoon
-  //{123, false, true, true }, // Dragoon Shadow
   {124, false, false, 0, false }, // Dragoon Remnants
   {126, false, false, 17 }, // High Templar
-  //{127, false, true, true }, // High Templar Shadow
   {129, false, false, 18 }, // Dark Templar (Hero)
   {130, false, false, 2 }, // Arbiter
-  //{131, false, true, true }, // Arbiter Shadow
   {132, true, false, 4 }, // Arbiter Engines
   {134, true, false }, // Archon Energy
   {135, true, false, 10 }, // Archon Being
   {136, true, false, 0, false }, // Archon Swirl
   {137, false, false, 1 }, // Probe
-  //{138, false, true, true }, // Probe Shadow
   {140, false, false, 2 }, // Scout
-  //{141, false, true, true }, // Scout Shadow
   {142, true, false, 2 }, // Scout Engines
   {144, false, false, 9 }, // Reaver
-  //{145, false, true, true }, // Reaver Shadow
   {147, false, false, 1 }, // Scarab
   {148, false, false, 1 }, // Observer
-  //{149, false, true, true }, // Observer Shadow
   {151, false, false, 13 }, // Zealot
-  //{152, false, true, true }, // Zealot Shadow
   //{153, false, false }, // Zealot Death
-  {155, false, false, 0, false }, // Templar Archives
-  //{156, true, false }, // Templar Archives Warp Flash
-  //{157, false, true }, // Templar Archives Shadow
-  {158, false, false, 0, false }, // Assimilator
-  //{159, true, false }, // Assimilator Warp Flash
-  //{160, false, true }, // Assimilator Shadow
-  {161, false, false, 0, false }, // Observatory
-  //{162, true, false }, // Observatory Warp Flash
-  //{163, false, true }, // Observatory Shadow
-  {164, false, false, 0, false }, // Citadel of Adun
-  //{165, true, false }, // Citadel of Adun Warp Flash
-  //{166, false, true }, // Citadel of Adun Shadow
-  {167, false, false, 0, false }, // Forge
+  {155, false, false, 0, false, true }, // Templar Archives
+  {158, false, false, 0, false, true }, // Assimilator
+  {161, false, false, 0, false, true }, // Observatory
+  {164, false, false, 0, false, true }, // Citadel of Adun
+  {167, false, false, 0, false, true }, // Forge
   {168, false, false }, // Forge Overlay
-  //{169, true, false }, // Forge Warp Flash
-  //{170, false, true }, // Forge Shadow
-  {171, false, false, 0, false }, // Gateway
-  //{172, true, false }, // Gateway Warp Flash
-  //{173, false, true }, // Gateway Shadow
-  {174, false, false, 0, false }, // Cybernetics Core
-  //{175, true, false }, // Cybernetics Core Warp Flash
+  {171, false, false, 0, false, true }, // Gateway
+  {174, false, false, 0, false, true }, // Cybernetics Core
   {176, false, false }, // Cybernetics Core Overlay
-  //{177, false, true }, // Cybernetics Core Shadow
   {178, false, false, 0, false }, // Khaydarin Crystal Formation
-  {179, false, false, 0, false }, // Nexus
-  //{180, true, false }, // Nexus Warp Flash
+  {179, false, false, 0, false, true }, // Nexus
   {181, true, false }, // Nexus Overlay
-  //{182, false, true }, // Nexus Shadow
-  {183, false, false, 0, false }, // Photon Cannon
-  //{184, false, true }, // Photon Cannon Shadow
-  //{185, true, false }, // Photon Cannon Warp Flash
-  {186, false, false, 0, false }, // Arbiter Tribunal
-  //{187, true, false }, // Arbiter Tribunal Warp Flash
-  //{188, false, true }, // Arbiter Tribunal Shadow
-  {189, false, false, 0, false }, // Pylon
-  //{190, true, false }, // Pylon Warp Flash
-  //{191, false, true }, // Pylon Shadow
-  {192, false, false, 0, false }, // Robotics Facility
-  //{193, true, false }, // Robotics Facility Warp Flash
-  //{194, false, true }, // Robotics Facility Shadow
-  {195, false, false, 0, false }, // Shield Battery
+  {183, false, false, 0, false, true }, // Photon Cannon
+  {186, false, false, 0, false, true }, // Arbiter Tribunal
+  {189, false, false, 0, false, true }, // Pylon
+  {192, false, false, 0, false, true }, // Robotics Facility
+  {195, false, false, 0, false, true }, // Shield Battery
   {196, true, false }, // Shield Battery Overlay
-  //{197, true, false }, // Shileld Battery Warp Flash
-  //{198, false, true }, // Shield Battery Shadow
-  {199, false, false, 0, false }, // Stargate
+  {199, false, false, 0, false, true }, // Stargate
   {200, true, false }, // Stargate Overlay
-  //{201, true, false }, // Stargate Warp Flash
-  //{202, false, true }, // Stargate Shadow
   {203, false, false, 0, false }, // Stasis Cell/Prison
-  {204, false, false, 0, false }, // Robotics Support Bay
-  //{205, true, false }, // Robotics Support Bay Warp Flash
-  //{206, false, true }, // Robotics Support Bay Shadow
+  {204, false, false, 0, false, true }, // Robotics Support Bay
   {207, false, false, 0, false }, // Protoss Temple
-  {208, false, false, 0, false }, // Fleet Beacon
-  //{209, true, false }, // Fleet Beacon Warp Flash
-  {210, true, false }, // Warp Texture
+  {208, false, false, 0, false, true }, // Fleet Beacon
   {211, true, false }, // Warp Anchor
-  //{212, false, true }, // Fleet Beacon Shadow
   {213, true, false }, // Explosion1 (Small)
   {214, true, false }, // Explosion1 (Medium)
   {215, true, false }, // Explosion (Large)
   {216, false, false }, // Protoss Building Rubble (Small)
   {217, false, false }, // Protoss Building Rubble (Large)
   {218, false, false, 1 }, // Battlecruiser
-  //{219, false, true, true }, // Battlecruiser Shadow
   {220, true, false, 2 }, // Battlecruiser Engines
   {221, false, false, 8 }, // Civilian
-  //{222, false, true, true }, // Civilian Shadow
   {223, false, false, 1 }, // Dropship
-  //{224, false, true, true }, // Dropship Shadow
   {225, true, false, 2 }, // Dropship Engines
   {226, false, false, 10 }, // Firebat
-  //{227, false, true, true }, // Firebat Shadow
   {228, false, false, 13 }, // Ghost
-  //{229, false, true, true }, // Ghost Shadow
   {230, false, false }, // Ghost Remnants
   //{231, false, false }, // Ghost Death
   //{232, true, false, true }, // Nuke Beam   (unused?)
   {233, true, false }, // Nuke Target Dot
   {234, false, false, 10 }, // Goliath Base
   {235, false, false, 11 }, // Goliath Turret
-  //{236, false, true, true }, // Goliath Shadow
   {237, false, false, 13 }, // Sarah Kerrigan
-  //{238, false, true, true }, // Sarah Kerrigan Shadow
   {239, false, false, 13 }, // Marine
-  //{240, false, true, true }, // Marine Shadow
   {241, false, false }, // Marine Remnants
   //{242, false, false }, // Marine Death
   {243, false, false, 1 }, // Wraith
-  //{244, false, true, true }, // Wraith Shadow
   {245, true, false, 2 }, // Wraith Engines
   //{246, false, false }, // Scanner Sweep
   {247, false, false, 3 }, // SCV
-  //{248, false, true, true }, // SCV Shadow
   {249, true, false, 4 }, // SCV Glow
   {250, false, false, 3 }, // Siege Tank (Tank) Base
   {251, false, false, 1 }, // Siege Tank (Tank) Turret
-  //{252, false, true, true }, // Siege Tank (Tank) Base Shadow
   {253, false, false, 0, false }, // Siege Tank (Siege) Base
   {254, false, false, 1 }, // Siege Tank (Siege) Turret
-  {255, false, true }, // Siege Tank (Siege) Base Shadow
   {256, false, false, 1 }, // Vulture
-  //{257, false, true, true }, // Vulture Shadow
   {258, false, false, 0, false }, // Spider Mine
-  //{259, false, true }, // Spider Mine Shadow
   {260, false, false, 0, false }, // Science Vessel (Base)
   {261, false, false, 1 }, // Science Vessel (Turret)
   //{262, false, true }, // Science Vessel Shadow
   {263, false, false, 0, false }, // Terran Academy
   {264, false, false }, // Academy Overlay
-  //{265, false, true }, // Academy Shadow
   {266, false, false, 0, false }, // Barracks
-  //{267, false, true }, // Barracks Shadow
   {268, false, false, 0, false }, // Armory
   {269, false, false }, // Armory Overlay
-  //{270, false, true }, // Armory Shadow
   {271, false, false, 0, false }, // Comsat Station
   {272, false, false, 0, false }, // Comsat Station Connector
   {273, false, false }, // Comsat Station Overlay
-  //{274, false, true }, // Comsat Station Shadow
   //{275, false, false }, // Command Center
   {276, false, false }, // Command Center Overlay
-  //{277, false, true }, // Command Center Shadow
   {278, false, false, 0, false }, // Supply Depot
   {279, false, false }, // Supply Depot Overlay
-  //{280, false, true }, // Supply Depot Shadow
   {281, false, false, 0, false }, // Control Tower
   {282, false, false, 0, false }, // Control Tower Connector
   {283, true, false }, // Control Tower Overlay
-  //{284, false, true }, // Control Tower Shadow
   {285, false, false, 0, false }, // Factory
   {286, true, false }, // Factory Overlay
-  //{287, false, true }, // Factory Shadow
   {288, false, false, 0, false }, // Covert Ops
   {289, false, false, 0, false }, // Covert Ops Connector
   {290, false, false }, // Covert Ops Overlay
-  //{291, false, true }, // Covert Ops Shadow
   {292, false, false, 0, false }, // Ion Cannon
   {293, false, false, 0, false }, // Machine Shop
   {294, false, false, 0, false }, // Machine Shop Connector
-  //{295, false, true }, // Machine Shop Shadow
   {296, false, false, 0, false }, // Missile Turret (Base)
   {297, false, false, 1, false }, // Missile Turret (Turret)
-  //{298, false, true }, // Missile Turret (Base) Shadow
   {299, false, false, 0, false }, // Crashed Batlecruiser
-  //{300, false, true }, // Crashed Battlecruiser Shadow
   {301, false, false, 0, false }, // Physics Lab
   {302, false, false, 0, false }, // Physics Lab Connector
-  //{303, false, true }, // Physics Lab Shadow
   {304, false, false, 0, false }, // Bunker
-  //{305, false, true }, // Bunker Shadow
   {306, true, false, 1 }, // Bunker Overlay
   {307, false, false, 0, false }, // Refinery
-  //{308, false, true }, // Refinery Shadow
   {309, false, false, 0, false }, // Science Facility
   {310, false, false }, // Science Facility Overlay
-  //{311, false, true }, // Science Facility Shadow
   {312, false, false, 0, false }, // Nuclear Silo
   {313, false, false, 0, false }, // Nuclear Silo Connector
   {314, false, false }, // Nuclear Silo Overlay
-  //{315, false, true }, // Nuclear Silo Shadow
   {316, false, false, 1 }, // Nuclear Missile
-  //{317, false, true, true }, // Nuclear Missile Shadow
   {318, true, false }, // Nuke Hit
   {319, false, false, 0, false }, // Starport
   {320, true, false }, // Starport Overlay
-  //{321, false, true }, // Starport Shadow
   {322, false, false, 0, false }, // Engineering Bay
   {323, false, false }, // Engineering Bay Overlay
-  //{324, false, true }, // Engineering Bay Shadow
   {325, false, false, 0, false }, // Terran Construction (Large)
-  //{326, false, true }, // Terran Construction (Large) Shadow
   {327, false, false, 0, false }, // Terran Construction (Medium)
-  //{328, false, true }, // Terran Construction (Medium) Shadow
   {329, false, false, 0, false }, // Addon Construction
   //{330, false, false }, // Terran Construction (Small)
-  //{331, false, true }, // Terran Construction (Small) Shadow
   {332, true, false }, // Explosion2 (Small)
   {333, true, false }, // Explosion2 (Medium)
   //{334, true, false }, // Building Explosion (Large)   // TODO: wtf?
@@ -331,20 +217,12 @@ std::vector<imagedat_info_t> image_predefs = {
   {336, false, false }, // Terran Building Rubble (Large)
   {337, true, false }, // Dark Swarm
   {338, false, false, 9 }, // Ragnasaur (Ash)
-  //{339, false, true, true }, // Ragnasaur (Ash) Shadow
   {340, false, false, 11 }, // Rhynadon (Badlands)
-  //{341, false, true, true }, // Rhynadon (Badlands) Shadow
   {342, false, false, 12 }, // Bengalaas (Jungle)
-  //{343, false, true, true }, // Bengalaas (Jungle) Shadow
   {344, false, false, 0, true }, // Vespene Geyser
-  //{345, false, false, false, true }, // Vespene Geyser2
-  //{346, false, true, 0, true }, // Vespene Geyser Shadow
   {347, false, false, 0, true }, // Mineral Field Type1
-  //{348, false, true, 0, true }, // Mineral Field Type1 Shadow
   {349, false, false, 0, true }, // Mineral Field Type2
-  //{350, false, true, 0, true }, // Mineral Field Type2 Shadow
   {351, false, false, 0, true }, // Mineral Field Type3
-  //{352, false, true, 0, true }, // Mineral Field Type3 Shadow
   {354, false, false, 0, false }, // Zerg Beacon
   {355, true, false }, // Zerg Beacon Overlay
   {356, false, false, 0, false }, // Terran Beacon
@@ -395,20 +273,6 @@ std::vector<imagedat_info_t> image_predefs = {
   //{402, false, false, true }, // Zerg Gas Sac Type2
   {403, false, false, 0 }, // Terran Gas Tank Type1
   //{404, false, false }, // Terran Gas Tank Type2
-  //{405, false, true, true }, // Mineral Chunk Shadow
-  //{406, false, true, true }, // Protoss Gas Orb Shadow
-  //{407, false, true, true }, // Zerg Gas Sac Shadow
-  //{408, false, true }, // Terran Gas Tank Shadow
-  //{409, false, true }, // Data Disk Shadow (Ground)
-  //{410, false, true, true }, // Data Disk Shadow (Carried)
-  //{411, false, true }, // Flag Shadow (Ground)
-  //{412, false, true }, // Flag Shadow (Carried)
-  //{413, false, true }, // Crystal Shadow (Ground)
-  //{414, false, true }, // Crystal Shadow (Carried)
-  //{415, false, true }, // Young Chrysalis Shadow (Ground)
-  //{416, false, true, true }, // Young Chrysalis Shadow (Carried)
-  //{417, false, true }, // Psi Emitter Shadow (Ground)
-  //{418, false, true }, // Psi Emitter Shadow (Carried)
   //{421, true, false, true }, // FlameThrower    // TODO: WTF?
   {422, true, false }, // Longbolt/Gemini Missiles Trail
   {423, false, false }, // Burrowing Dust
@@ -541,15 +405,10 @@ std::vector<imagedat_info_t> image_predefs = {
   //{558, true, false }, // Hallucination Death2
   //{559, true, false }, // Hallucination Death3
 //  {589, false, false }, // 2/38 Ash
-//  {590, false, true }, // 2/38 Ash Shadow
 //  {591, false, false }, // 2/39 Ash
-//  {592, false, true }, // 2/39 Ash Shadow
 //  {593, false, false }, // 2/41 Ash
-//  {594, false, true }, // 2/41 Ash Shadow
 //  {595, false, false }, // 2/40 Ash
-//  {596, false, true }, // 2/40 Ash Shadow
 //  {597, false, false }, // 2/42 Ash
-//  {598, false, true }, // 2/42 Ash Shadow
 //  {599, false, false }, // 2/43 Ash
 //  {600, false, false }, // 2/44 Ash
 //  {601, false, false }, // 2/1 Ash
@@ -562,35 +421,20 @@ std::vector<imagedat_info_t> image_predefs = {
 //  {608, false, false }, // 4/2 Ash
 //  {609, false, false }, // 4/3 Ash
 //  {610, false, false }, // 4/56 Jungle
-//  {611, false, true }, // 4/56 Jungle Shadow
 //  {612, false, false }, // 4/57 Jungle
-//  {613, false, true }, // 4/57 Jungle Shadow
 //  {614, false, false }, // 4/58 Jungle
-//  {615, false, true }, // 4/58 Jungle Shadow
 //  {616, false, false }, // 4/59 Jungle
-//  {617, false, true }, // 4/59 Jungle Shadow
 //  {618, false, false }, // 9/5 Jungle
-//  {619, false, true }, // 9/5 Jungle Shadow
 //  {620, false, false }, // 9/6 Jungle
-//  {621, false, true }, // 9/6 Jungle Shadow
 //  {622, false, false }, // 9/7 Jungle
-//  {623, false, true }, // 9/7 Jungle Shadow
 //  {624, false, false }, // 4/51 Jungle
-//  {625, false, true }, // 4/51 Jungle Shadow
 //  {626, false, false }, // 4/52 Jungle
-//  {627, false, true }, // 4/52 Jungle Shadow
 //  {628, false, false }, // 4/54 Jungle
-//  {629, false, true }, // 4/54 Jungle Shadow
 //  {630, false, false }, // 4/53 Jungle
-//  {631, false, true }, // 4/53 Jungle Shadow
 //  {632, false, false }, // 9/1 Jungle
-//  {633, false, true }, // 9/1 Jungle Shadow
 //  {634, false, false }, // 9/2 Jungle
-//  {635, false, true }, // 9/2 Jungle Shadow
 //  {636, false, false }, // 9/3 Jungle
-//  {637, false, true }, // 9/3 Jungle Shadow
 //  {638, false, false }, // 9/4 Jungle
-//  {639, false, true }, // 9/4 Jungle Shadow
 //  {640, false, false }, // 4/12 Jungle
 //  {641, false, false }, // 4/13 Jungle
 //  {642, false, false }, // 4/1 Jungle
@@ -617,17 +461,11 @@ std::vector<imagedat_info_t> image_predefs = {
 //  {663, false, false }, // 11/11 Jungle
 //  {664, false, false }, // 11/12 Jungle
 //  {665, false, false }, // 7/4 Platform
-//  {666, false, true }, // 7/4 Platform Shadow
 //  {667, false, false }, // 7/5 Platform
-//  {668, false, true }, // 7/5 Platform Shadow
 //  {669, false, false }, // 7/6 Platform
-//  {670, false, true }, // 7/6 Platform Shadow
 //  {671, false, false }, // 7/1 Platform
-//  {672, false, true }, // 7/1 Platform Shadow
 //  {673, false, false }, // 7/2 Platform
-//  {674, false, true }, // 7/2 Platform Shadow
 //  {675, false, false }, // 7/3 Platform
-//  {676, false, true }, // 7/3 Platform Shadow
 //  {677, false, false }, // 7/9 Platform
 //  {678, false, false }, // 7/10 Platform
 //  {679, false, false }, // 7/8 Platform
@@ -643,26 +481,18 @@ std::vector<imagedat_info_t> image_predefs = {
 //  {689, false, false }, // 12/1 Platform
 //  {690, false, false }, // 9/27 Platform
 //  {691, false, false }, // 5/54 Badlands
-//  {692, false, true }, // 5/54 Badlands Shadow
 //  {693, false, false }, // 5/55 Badlands
-//  {694, false, true }, // 5/55 Badlands Shadow
 //  {695, false, false }, // 5/56 Badlands
-//  {696, false, true }, // 5/56 Badlands Shadow
 //  {697, false, false }, // 5/57 Badlands
-//  {698, false, true }, // 5/57 Badlands Shadow
 //  {699, false, false }, // 6/16 Badlands
 //  {700, false, false }, // 6/17 Badlands
 //  {701, false, false }, // 6/20 Badlands
 //  {702, false, false }, // 6/21 Badlands
 //  {703, false, false }, // 5/10 Badlands
 //  {704, false, false }, // 5/50 Badlands
-//  {705, false, true }, // 5/50 Badlands Shadow
 //  {706, false, false }, // 5/52 Badlands
-//  {707, false, true }, // 5/52 Badlands Shadow
 //  {708, false, false }, // 5/53 Badlands
-//  {709, false, true }, // 5/53 Badlands Shadow
 //  {710, false, false }, // 5/51 Badlands
-//  {711, false, true }, // 5/51 Badlands Shadow
 //  {712, false, false }, // 6/3 Badlands
 //  {713, false, false }, // 11/3 Badlands
 //  {714, false, false }, // 11/8 Badlands
@@ -723,188 +553,112 @@ std::vector<imagedat_info_t> image_predefs = {
  // {769, false, false }, // 8/3 Twilight1
  // {770, false, false }, // 8/3 Twilight2
  // {771, false, false }, // 9/29 Ice
- // {772, false, true }, // 9/29 Ice Shadow
  // {773, false, false }, // 9/28 Ice
- // {774, false, true }, // 9/28 Ice Shadow
  // {775, false, false }, // 12/38 Ice
- // {776, false, true }, // 12/38 Ice Shadow
  // {777, false, false }, // 12/37 Ice
- // {778, false, true }, // 12/37 Ice Shadow
  // {779, false, false }, // 12/33 Ice1
- // {780, false, true }, // 12/33 Ice1 Shadow
  // {781, false, false }, // 9/21 Ice
- // {782, false, true }, // 9/21 Ice Shadow
  // {783, false, false }, // 9/15 Ice
- // {784, false, true }, // 9/15 Ice Shadow
  // {785, false, false }, // 9/16 Ice
- // {786, false, true }, // 9/16 Ice Shadow
  // {787, false, false }, // Unknown787
  // {788, false, false }, // Unknown788
  // {789, false, false }, // 12/9 Ice1
  // {790, false, false }, // 12/10 Ice1
  // {791, false, false }, // 9/24 Ice
- // {792, false, true }, // 9/24 Ice Shadow
  // {793, false, false }, // 9/23 Ice
- // {794, false, true }, // 9/23 Ice Shadow
  // {795, false, false }, // Unknown795
- // {796, false, true }, // Unknown Ice Shadow
  // {797, false, false }, // 12/7 Ice
- // {798, false, true }, // 12/7 Ice Shadow
  // {799, false, false }, // 12/8 Ice
- // {800, false, true }, // 12/8 Ice Shadow
  // {801, false, false }, // 12/9 Ice2
- // {802, false, true }, // 12/9 Ice2 Shadow
  // {803, false, false }, // 12/10 Ice2
- // {804, false, true }, // 12/10 Ice2 Shadow
  // {805, false, false }, // 12/40 Ice
- // {806, false, true }, // 12/40 Ice Shadow
  // {807, false, false }, // 12/41 Ice
- // {808, false, true }, // 12/41 Ice Shadow
  // {809, false, false }, // 12/42 Ice
- // {810, false, true }, // 12/42 Ice Shadow
  // {811, false, false }, // 12/5 Ice
- // {812, false, true }, // 12/5 Ice Shadow
  // {813, false, false }, // 12/6 Ice
- // {814, false, true }, // 12/6 Ice Shadow
  // {815, false, false }, // 12/36 Ice
- // {816, false, true }, // 12/36 Ice Shadow
  // {817, false, false }, // 12/32 Ice
- // {818, false, true }, // 12/32 Ice Shadow
  // {819, false, false }, // 12/33 Ice2
- // {820, false, true }, // 12/33 Ice2 Shadow
  // {821, false, false }, // 12/34 Ice
- // {822, false, true }, // 12/34 Ice Shadow
  // {823, false, false }, // 12/24 Ice1
- // {824, false, true }, // 12/24 Ice1 Shadow
  // {825, false, false }, // 12/25 Ice1
- // {826, false, true }, // 12/25 Ice1 Shadow
  // {827, false, false }, // 12/30 Ice1
- // {828, false, true }, // 12/30 Ice1 Shadow
  // {829, false, false }, // 12/31 Ice
- // {830, false, true }, // 12/31 Ice Shadow
  // {831, false, false }, // 12/20 Ice
  // {832, false, false }, // 12/30 Ice2
- // {833, false, true }, // 12/30 Ice2 Shadow
  // {834, false, false }, // 9/22 Ice
- // {835, false, true }, // 9/22 Ice Shadow
  // {836, false, false }, // 12/24 Ice2
- // {837, false, true }, // 12/24 Ice2 Shadow
  // {838, false, false }, // 12/25 Ice2
- // {839, false, true }, // 12/25 Ice2 Shadow
  // {840, false, false }, // Unknown840
  // {841, false, false }, // 4/1 Ice
  // {842, false, false }, // 6/1 Ice
  // {843, false, false }, // 5/6 Ice
- // {844, false, true }, // 5/6 Ice Shadow
  // {845, false, false }, // 5/7 Ice
- // {846, false, true }, // 5/7 Ice Shadow
  // {847, false, false }, // 5/8 Ice
- // {848, false, true }, // 5/8 Ice Shadow
  // {849, false, false }, // 5/9 Ice
- // {850, false, true }, // 5/9 Ice Shadow
  // {851, false, false }, // 10/10 Desert1
  // {852, false, false }, // 10/12 Desert1
- // {853, false, true }, // 10/12 Desert1 Shadow
  // {854, false, false }, // 10/8 Desert1
- // {855, false, true }, // 10/8 Desert1 Shadow
  // {856, false, false }, // 10/9 Desert1
- // {857, false, true }, // 10/9 Desert1 Shadow
  // {858, false, false }, // 6/10 Desert
- // {859, false, true }, // 6/10 Desert Shadow
  // {860, false, false }, // 6/13 Desert1
- // {861, false, true }, // 6/13 Desert1 Shadow
  // {862, false, false }, // Unknown Desert
- // {863, false, true }, // Unknown Desert Shadow
  // {864, false, false }, // 10/12 Desert2
- // {865, false, true }, // 10/12 Desert2 Shadow
  // {866, false, false }, // 10/9 Desert2
- // {867, false, true }, // 10/9 Desert2 Shadow
  // {868, false, false }, // 10/10 Desert2
- // {869, false, true }, // 10/10 Desert2 Shadow
  // {870, false, false }, // 10/11 Desert
- // {871, false, true }, // 10/11 Desert Shadow
  // {872, false, false }, // 10/14 Desert
- // {873, false, true }, // 10/14 Desert Shadow
  // {874, false, false }, // 10/41 Desert
- // {875, false, true }, // 10/41 Desert Shadow
  // {876, false, false }, // 10/39 Desert
- // {877, false, true }, // 1/39 Desert Shadow
  // {878, false, false }, // 10/8 Desert2
- // {879, false, true }, // 10/8 Desert2 Shadow
  // {880, false, false }, // 10/6 Desert
  // {881, false, false }, // 10/7 Desert
- // {882, false, true }, // 10/7 Desert Shadow
  // {883, false, false }, // 4/6 Desert
- // {884, false, true }, // 4/6 Desert Shadow
  // {885, false, false }, // 4/11 Desert
- // {886, false, true }, // 4/11 Desert Shadow
  // {887, false, false }, // 4/10 Desert
- // {888, false, true }, // 4/10 Desert Shadow
  // {889, false, false }, // 4/9 Desert
  // {890, false, false }, // 4/7 Desert
- // {891, false, true }, // 4/7 Desert Shadow
  // {892, false, false }, // 4/12 Desert
- // {893, false, true }, // 4/12 Desert Shadow
  // {894, false, false }, // 4/8 Desert
  // {895, false, false }, // 4/13 Desert
- // {896, false, true }, // 4/13 Desert Shadow
  // {897, false, false }, // 4/17 Desert
  // {898, false, false }, // 4/15 Desert1
- // {899, false, true }, // 4/15 Desert1 Shadow
  // {900, false, false }, // 10/23 Desert
- // {901, false, true }, // 10/23 Desert Shadow
  // {902, false, false }, // 10/5 Desert
- // {903, false, true }, // 10/5 Desert Shadow
  // {904, false, false }, // 6/13 Desert2
- // {905, false, true }, // 6/13 Desert2 Shadow
  // {906, false, false }, // 6/20 Desert
  // {907, false, false }, // 4/15 Desert2
- // {908, false, true }, // 4/15 Desert2 Shadow
  // {909, false, false }, // 8/23 Desert
- // {910, false, true }, // 8/23 Desert Shadow
  // {911, false, false }, // 12/1 Desert Overlay
  // {912, false, false }, // 11/3 Desert
   {914, false, false, 0, false }, // Lurker Egg
   {915, false, false, 10 }, // Devourer
-  //{916, false, true, true }, // Devourer Shadow
   {917, false, false }, // Devourer Birth
   {918, false, false }, // Devourer Death
   {919, false, false }, // Lurker Birth
   {920, false, false, 7 }, // Lurker + Lurker Remnants
   //{921, false, false, true }, // Lurker
-  //{922, false, true, true }, // Lurker Shadow
   {923, false, false, 0, false }, // Overmind Cocoon
-  //{924, false, true }, // Overmind Cocoon Shadow
   {925, true, false }, // Dark Archon Energy
   {926, true, false, 10 }, // Dark Archon Being
   {927, true, false }, // Dark Archon Swirl
   {928, true, false }, // Dark Archon Death
   {929, false, false, 5 }, // Corsair
-  //{930, false, true, true }, // Corsair Shadow
   {931, true, false, 2 }, // Corsair Engines
   //{933, false, false, true }, // Dark Templar (Unit)
   {934, false, false, 0, false }, // Warp Gate
-  //{935, false, true }, // Warp Gate Shadow
   {936, true, false }, // Warp Gate Overlay
   {937, false, false, 0, false }, // Xel'Naga Temple
-  //{938, false, true }, // Xel'Naga Temple Shadow
   {939, false, false, 1 }, // Valkyrie
-  //{940, false, true, true }, // Valkyrie Shadow
   {941, true, false, 2 }, // Valkyrie Engines
   {944, false, false, 13 }, // Medic
-  //{945, false, true, true }, // Medic Shadow
   {946, false, false }, // Medic Remnants
   {947, false, false, 0, false }, // Psi Disrupter
-  //{948, false, true }, // Psi Disrupter Shadow
   {949, false, false, 0, false }, // Power Generator
-  //{950, false, true }, // Power Generator Shadow
   {951, true, false }, // Disruption Web
   {952, false, false, 12 }, // Scantid (Desert)
-  //{953, false, true, true }, // Scantid (Desert) Shadow
   {954, false, false, 12 }, // Kakaru (Twilight)
-  //{955, false, true, true }, // Kakaru (Twilight) Shadow
   {956, false, false, 8 }, // Ursadon (Ice)
-  //{957, false, true, true }, // Ursadon (Ice) Shadow
   {958, false, false, 0, false }, // Uraj
   {959, false, false, 0, false }, // Khalis
   {960, true, false }, // Halo Rockets Trail

@@ -46,7 +46,7 @@ typedef struct {
   std::uint16_t unk2; // who knows
 } anim_ref_t;
 
-typedef struct {
+struct frame_t {
   std::uint16_t x;
   std::uint16_t y;
   std::int16_t xoffs;
@@ -55,7 +55,16 @@ typedef struct {
   std::uint16_t height;
   std::uint16_t unk1; // 0?
   std::uint16_t unk2; // 0?
-} frame_t;
+
+  void halve() {
+    x /= 2;
+    y /= 2;
+    xoffs /= 2;
+    yoffs /= 2;
+    width /= 2;
+    height /= 2;
+  }
+};
 
 
 
@@ -63,14 +72,22 @@ typedef struct {
 
 #define ANIM_TEX_COUNT 2
 
-typedef struct {
+struct anim_t {
   std::uint32_t width;      // grp width
   std::uint32_t height;     // grp height
 
   std::vector<std::pair<std::string, cimg_library::CImg<std::uint8_t>>> sheets;
 
   std::vector<frame_t> framedata;
-} anim_t;
+
+  void make_lowdef() {
+    for (frame_t& frame : framedata) {
+      frame.halve();
+    }
+    width /= 2;
+    height /= 2;
+  }
+};
 
 //anim_t loadAnim(std::istream& is);
 anim_t loadAnim(const std::vector<std::uint8_t>& data);

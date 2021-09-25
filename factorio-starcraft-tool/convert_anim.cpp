@@ -13,6 +13,7 @@
 #include <cassert>
 #include <any>
 #include <fstream>
+#include <future>
 
 #include "image_predefs.h"
 #include "anim.h"
@@ -308,7 +309,71 @@ void create_depth_normal(anim_t &anim) {
   anim.sheets.push_back(std::make_pair(std::string("depth_normal"), normal));
 }
 
-std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imagedat_info_t& img_info, const supplement_info_t& anim_info) {
+std::promise<CImgList> warp_texture_promise[2];
+std::shared_future<CImgList> warp_texture_future[2] = {
+  warp_texture_promise[0].get_future(),
+  warp_texture_promise[1].get_future()
+};
+
+void create_warp_anim(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets, bool is_low) {
+  CImg target = frames(0);
+  CImgList warp_texture_frames = warp_texture_future[is_low].get();
+  
+  CImgList warp_anim;
+
+  // Create warp-texture part of animation
+  //constexpr double step = 1.0 / 14;
+  constexpr double step = 1.0 / 20;
+  double fade_amount = 0.1;
+  for (CImg& warp_frame : warp_texture_frames) {
+    //int new_size = std::max({ target.width(), target.height() });
+    warp_frame.resize(target.width(), target.height(), 1, 3, 1);
+
+    CImg new_frame = target;
+    cimg_forXY(new_frame, x, y) {
+      std::uint8_t& r = warp_frame(x, y, 0, 0);
+      std::uint8_t& g = warp_frame(x, y, 0, 1);
+      std::uint8_t& b = warp_frame(x, y, 0, 2);
+      std::uint8_t& a = new_frame(x, y, 0, 3);
+      
+      new_frame(x, y, 0, 0) = std::min(64 * fade_amount + r * fade_amount, 255.0);
+      new_frame(x, y, 0, 1) = std::min(64 * fade_amount + g * fade_amount, 255.0);
+      new_frame(x, y, 0, 2) = std::min(64 * fade_amount + b * fade_amount, 255.0);
+      if (a > 64)
+        new_frame(x, y, 0, 3) = std::min(128 * fade_amount + a * fade_amount, 255.0);
+    }
+    fade_amount += step;
+    warp_anim.push_back(new_frame);
+  }
+
+  // Create fade-in part of animation
+  for (int i = 16; i > 0; i--) {
+    CImg new_frame = target;
+    double scale = std::pow(std::log(i + 1) / std::log(16), 1.5);
+    //double scale = i / 16.0;
+    cimg_forXY(new_frame, x, y) {
+      std::uint8_t& r = new_frame(x, y, 0, 0);
+      std::uint8_t& g = new_frame(x, y, 0, 1);
+      std::uint8_t& b = new_frame(x, y, 0, 2);
+      std::uint8_t& a = new_frame(x, y, 0, 3);
+      
+      r = std::min(r + (255 - r) * scale, 255.0);
+      g = std::min(g + (255 - g) * scale, 255.0);
+      b = std::min(b + (255 - b) * scale, 255.0);
+      if (a > 64) {
+        a = std::min(a + (255 - a) * scale, 255.0);
+      }
+    }
+    warp_anim.push_back(new_frame);
+  }
+
+  supplement_info_t new_info = info;
+  new_info.framecount = warp_anim.size();
+  new_info.dst_cells_per_row = get_cells_per_row(warp_anim);
+  output_sheets.emplace(name + "_warp_in", img_list_to_sheet(warp_anim, new_info));
+}
+
+std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imagedat_info_t& img_info, const supplement_info_t& anim_info, bool is_low) {
   std::unordered_map<std::string, CImg> output_sheets;
   for (auto& sheet : anim.sheets) {
     BGRAtoRGBA(sheet.second);
@@ -318,6 +383,13 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
     }
 
     CImgList frames = convert_to_img_list(anim, sheet.second, anim_info);
+    
+    if (img_info.id == 210 && sheet.first == "diffuse") { // Warp texture
+      warp_texture_promise[is_low].set_value(frames);
+    }
+    if (img_info.warp_overlay && sheet.first == "diffuse") {  // Has warp overlay
+      create_warp_anim(sheet.first, frames, anim_info, output_sheets, is_low);
+    }
 
     if (anim_info.using_turns) {
       frames_convert_gfxturns(sheet.first, frames, anim_info, output_sheets);
@@ -341,16 +413,7 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
 void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_info_t& img_info, const std::string& out_dir, bool is_low) {
   anim_t anim = loadAnim(anim_data);
   if (is_low) {
-    for (frame_t& frame : anim.framedata) {
-      frame.height /= 2;
-      frame.width /= 2;
-      frame.x /= 2;
-      frame.y /= 2;
-      frame.xoffs /= 2;
-      frame.yoffs /= 2;
-    }
-    anim.width /= 2;
-    anim.height /= 2;
+    anim.make_lowdef();
   }
 
   supplement_info_t anim_info = generate_supplemental_info(anim, img_info, 0, anim.framedata.size() - 1);
@@ -358,7 +421,7 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
   create_depth_normal(anim);
 
   // Convert to lists
-  std::unordered_map<std::string, CImg> output_sheets = convert_to_output(anim, img_info, anim_info);
+  std::unordered_map<std::string, CImg> output_sheets = convert_to_output(anim, img_info, anim_info, is_low);
 
   // Write output PNGs
   std::array<char, 128> filename;
