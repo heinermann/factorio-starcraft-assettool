@@ -356,44 +356,11 @@ void create_warp_anim(const std::string& name, const CImgList& frames, const sup
       std::uint8_t& b = new_frame(x, y, 0, 2);
       std::uint8_t& a = new_frame(x, y, 0, 3);
 
-      r = std::min(r + (255 - r) * scale, 255.0);
-      g = std::min(g + (255 - g) * scale, 255.0);
-      b = std::min(b + (255 - b) * scale, 255.0);
-      if (a > 128) {
-        a = std::min(a + (255 - a) * scale, 255.0);
-      }
-    }
-    warp_anim.push_back(new_frame);
-  }
-
-  supplement_info_t new_info = info;
-  new_info.framecount = warp_anim.size();
-  new_info.dst_cells_per_row = get_cells_per_row(warp_anim);
-  output_sheets.emplace(name + "_warp_in", img_list_to_sheet(warp_anim, new_info));
-}
-
-void create_warp_anim_teamcolor(const std::string& name, CImg target, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets, bool is_low) {
-  CImgList warp_texture_frames = warp_texture_future[is_low].get();
-
-  CImgList warp_anim;
-
-  // Create warp-texture part of animation
-  //constexpr double step = 1.0 / 14;
-  constexpr double step = 1.0 / 20;
-  double fade_amount = 0.1;
-  for (CImg& warp_frame : warp_texture_frames) {
-    warp_anim.push_back(CImg(target.width(), target.height(), 1, 4, 0));
-  }
-
-  // Create fade-in part of animation
-  for (int i = 16; i > 0; i--) {
-    CImg new_frame = target;
-    double scale = std::pow(std::log(i) / std::log(16), 1.5);
-    cimg_forXY(new_frame, x, y) {
-      std::uint8_t& a = new_frame(x, y, 0, 3);
-
+      r = 255;
+      g = 255;
+      b = 255;
       if (a > 0) {
-        a = std::min(a * (1 - scale), 255.0);
+        a = std::min(a * scale, 255.0);
       }
     }
     warp_anim.push_back(new_frame);
@@ -407,7 +374,6 @@ void create_warp_anim_teamcolor(const std::string& name, CImg target, const supp
 
 std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imagedat_info_t& img_info, const supplement_info_t& anim_info, bool is_low) {
   std::unordered_map<std::string, CImg> output_sheets;
-  std::optional<CImg> diffuse_img = std::nullopt;
   for (auto& sheet : anim.sheets) {
     BGRAtoRGBA(sheet.second);
 
@@ -422,14 +388,6 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
     }
     if (img_info.warp_overlay && sheet.first == "diffuse") {  // Has warp overlay
       create_warp_anim(sheet.first, frames, anim_info, output_sheets, is_low);
-      diffuse_img = frames(0);
-    }
-    else if (img_info.warp_overlay && sheet.first == "teamcolor") {
-      CImg frame = frames(0);
-      if (diffuse_img) {
-        frame &= *diffuse_img;
-      }
-      create_warp_anim_teamcolor(sheet.first, frame, anim_info, output_sheets, is_low);
     }
 
     if (anim_info.using_turns) {
