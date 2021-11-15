@@ -9,6 +9,7 @@ struct imagedat_info_t {
   unsigned gfx_turns_frames;
   bool vertical_frames;
   bool warp_overlay;
+  bool flipped;
 };
 
 extern std::vector<imagedat_info_t> image_predefs;

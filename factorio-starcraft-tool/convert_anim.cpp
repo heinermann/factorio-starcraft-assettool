@@ -382,7 +382,13 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
     }
 
     CImgList frames = convert_to_img_list(anim, sheet.second, anim_info);
-    
+
+    if (img_info.flipped) {
+      for (auto& frame : frames) {
+        flip_horizontal(frame);
+      }
+    }
+
     if (img_info.id == 210 && sheet.first == "diffuse") { // Warp texture
       warp_texture_promise[is_low].set_value(frames);
     }
@@ -425,10 +431,12 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
   // Write output PNGs
   std::array<char, 128> filename;
   for (auto& sheet : output_sheets) {
-    std::snprintf(filename.data(), filename.size(), "%s/main_%03d_%s.png", out_dir.c_str(), img_info.id, sheet.first.c_str());
+    std::snprintf(filename.data(), filename.size(), "%s/main_%03d%s_%s.png", out_dir.c_str(), img_info.id, img_info.flipped ? "_flipped" : "", sheet.first.c_str());
     zero_out_transparent(sheet.second);
     cimg_library::save_png(sheet.second, filename.data());
   }
+
+  if (img_info.flipped) return;
 
   // Write lua info
   std::snprintf(filename.data(), filename.size(), "__starcraft__/%s/main_%03d_diffuse.png", out_dir.c_str(), img_info.id);

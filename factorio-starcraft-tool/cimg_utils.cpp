@@ -46,3 +46,15 @@ void add_alpha_px(CImg& img, int x, int y, std::uint8_t value) {
     img(x, y, 0, 3) = std::min(img(x, y, 0, 3) + value, 255);
   }
 }
+
+void flip_horizontal(CImg& img) {
+  int width = img.width();
+  for (int y = 0; y < img.height(); ++y) {
+    for (int x = 0; x < width / 2; ++x) {
+      std::swap(img(x, y, 0, 0), img(width - x - 1, y, 0, 0));
+      std::swap(img(x, y, 0, 1), img(width - x - 1, y, 0, 1));
+      std::swap(img(x, y, 0, 2), img(width - x - 1, y, 0, 2));
+      std::swap(img(x, y, 0, 3), img(width - x - 1, y, 0, 3));
+    }
+  }
+}
