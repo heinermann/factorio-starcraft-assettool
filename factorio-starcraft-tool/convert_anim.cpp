@@ -188,8 +188,12 @@ void frames_convert_unprocessed(const std::string& name, const CImgList& frames,
 
 // Function to split the sheets that are too large
 void split_sheet_result(std::unordered_map<std::string, CImg>& sheets, const supplement_info_t& info) {
+  std::unordered_map<std::string, CImg> new_sheets;
   for (auto& [name, sheet] : sheets) {
-    if (sheet.height() <= 8192) continue;
+    if (sheet.height() <= 8192) {
+      new_sheets.emplace(name, sheet);
+      continue;
+    }
 
     int vframes_per_page = 8192 / info.dst_frame_height;
     int page_height = vframes_per_page * info.dst_frame_height;
@@ -200,11 +204,10 @@ void split_sheet_result(std::unordered_map<std::string, CImg>& sheets, const sup
       CImg new_img(width, new_height, 1, sheet.spectrum(), 0);
 
       draw_image(new_img, 0, 0, sheet, 0, y, width, new_height);
-      sheets.emplace(name + "_" + std::to_string(i), std::move(new_img));
+      new_sheets.emplace(name + "_" + std::to_string(i), std::move(new_img));
     }
-
-    sheets.erase(name);
   }
+  sheets.swap(new_sheets);
 }
 
 void frames_convert_gfxturns(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {

@@ -61,9 +61,11 @@ void extract_sounds(Casc& casc) {
   std::for_each(std::execution::par_unseq, sound_predefs.cbegin(), sound_predefs.cend(), [&](const std::string& snd_def) {
     std::vector<std::uint8_t> buffer;
     if (casc.read_file(snd_def, buffer)) {
-      std::filesystem::create_directories(std::filesystem::path(snd_def).parent_path());
+      std::string snd_path = snd_def;
+      std::ranges::replace(snd_path, '\\', '/');
+      std::filesystem::create_directories(std::filesystem::path(snd_path).parent_path());
 
-      std::ofstream out(snd_def, std::ios::out | std::ios::binary);
+      std::ofstream out(snd_path, std::ios::out | std::ios::binary);
       if (!out.write(reinterpret_cast<char*>(buffer.data()), buffer.size())) {
         std::cerr << "Failed to write " << snd_def << std::endl;
       }
