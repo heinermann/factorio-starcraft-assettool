@@ -1,6 +1,7 @@
 #include "cimg_extensions.h"
 
 #include <cstdint>
+#include <stdexcept>
 #include "../CImg/CImg.h"
 
 namespace cimg_library {
@@ -16,7 +17,7 @@ namespace cimg_library {
       auto pixel_type = []() { return "uint8_t"; };
 
       if (!filename)
-        throw std::exception("save_png(): Specified filename is (null).");
+        throw std::runtime_error("save_png(): Specified filename is (null).");
 
       if (img.is_empty()) { cimg::fempty(0, filename); return; }
 

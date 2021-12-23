@@ -37,7 +37,7 @@ std::string to_lua_string(const std::any& data, int indent) {
     return "\"" + *v + "\"";
   }
   std::string err = std::string("Unhandled type: ") + data.type().name();
-  throw std::exception(err.c_str());
+  throw std::runtime_error(err);
 }
 
 std::string to_lua_string(const std::vector<std::any>& data, int indent) {

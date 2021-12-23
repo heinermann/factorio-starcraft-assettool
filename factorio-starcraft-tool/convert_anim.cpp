@@ -6,7 +6,6 @@
 #include <functional>
 #include <cstdint>
 #include <cmath>
-#include <numbers>
 #include <algorithm>
 #include <cstdio>
 #include <array>

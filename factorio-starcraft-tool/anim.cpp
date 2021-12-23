@@ -6,7 +6,7 @@
 #include "../simple-dds-image-reader/ddsreader.hpp"
 #include "../CImg/CImg.h"
 
-#define TEST(x) if(!(x)) throw std::exception(#x)
+#define TEST(x) if(!(x)) throw std::runtime_error(#x)
 
 constexpr uint32_t MAKEFOURCC(char a, char b, char c, char d) {
   return a | (b << 8) | (c << 16) | (d << 24);

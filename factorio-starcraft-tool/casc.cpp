@@ -17,7 +17,7 @@ bool Casc::open(const std::string& casc_dir) {
 }
 
 bool Casc::read_file(const std::string& file_name, std::vector<std::uint8_t>& result) {
-  std::lock_guard guard(casc_access_mutex);
+  std::lock_guard<std::mutex> guard(casc_access_mutex);
 
   /* TODO: exceptions
   auto raise_error = [&](const std::string& msg) {

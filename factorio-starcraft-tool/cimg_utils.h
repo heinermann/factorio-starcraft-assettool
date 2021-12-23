@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include "../CImg/CImg.h"
 
 using CImg = cimg_library::CImg<std::uint8_t>;

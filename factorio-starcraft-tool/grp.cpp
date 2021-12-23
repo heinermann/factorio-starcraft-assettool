@@ -1,12 +1,13 @@
 #include "grp.h"
 
 #include <vector>
+#include <stdexcept>
 #include <cstdint>
 
 #include "../simple-dds-image-reader/ddsreader.hpp"
 #include "../CImg/CImg.h"
 
-#define TEST(x) if(!(x)) throw std::exception(#x)
+#define TEST(x) if(!(x)) throw std::runtime_error(#x)
 
 using CImg = cimg_library::CImg<std::uint8_t>;
 
