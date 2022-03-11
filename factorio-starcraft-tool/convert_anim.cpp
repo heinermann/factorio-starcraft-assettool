@@ -13,6 +13,8 @@
 #include <any>
 #include <fstream>
 #include <future>
+#include <numbers>
+#include <valarray>
 
 #include "image_predefs.h"
 #include "anim.h"
@@ -146,7 +148,7 @@ CImg img_list_to_turns_sheet(const CImgList& frames, const supplement_info_t& in
   return result;
 }
 
-CImgList convert_to_gfxturns(const CImgList& frames, const supplement_info_t& info) {
+CImgList convert_to_gfxturns(const CImgList& frames, const CImgList& mirror_frames, const supplement_info_t& info) {
   // Create turns sheet
   CImgList newframes(info.img.gfx_turns_frames * 32);
   for (unsigned i = 0; i < info.img.gfx_turns_frames; ++i) {
@@ -156,7 +158,7 @@ CImgList convert_to_gfxturns(const CImgList& frames, const supplement_info_t& in
 
     // Mirror images for missing turns
     for (int turn = 17; turn < 32; ++turn) {
-      newframes(turn * info.img.gfx_turns_frames + i) = newframes((32 - turn) * info.img.gfx_turns_frames + i).get_mirror("x");
+      newframes(turn * info.img.gfx_turns_frames + i) = mirror_frames(i * 17 + 16 - (turn - 16));// newframes((32 - turn) * info.img.gfx_turns_frames + i).get_mirror("x");
     }
   }
   return newframes;
@@ -187,6 +189,7 @@ void frames_convert_unprocessed(const std::string& name, const CImgList& frames,
 }
 
 // Function to split the sheets that are too large
+// TODO: Bug that splits some graphics on the graphic itself
 void split_sheet_result(std::unordered_map<std::string, CImg>& sheets, const supplement_info_t& info) {
   std::unordered_map<std::string, CImg> new_sheets;
   for (auto& [name, sheet] : sheets) {
@@ -210,8 +213,8 @@ void split_sheet_result(std::unordered_map<std::string, CImg>& sheets, const sup
   sheets.swap(new_sheets);
 }
 
-void frames_convert_gfxturns(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
-  CImgList turn_frames = convert_to_gfxturns(frames, info);
+void frames_convert_gfxturns(const std::string& name, const CImgList& frames, const CImgList& mirror_frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
+  CImgList turn_frames = convert_to_gfxturns(frames, mirror_frames, info);
   output_sheets.emplace(name, img_list_to_turns_sheet(turn_frames, info));
 
   if (name == "diffuse" && !info.img.draw_as_glow && !info.img.draw_as_shadow) {
@@ -285,39 +288,13 @@ std::unordered_map<int, std::vector<std::function<decltype(frames_convert_unproc
 using anymap = std::map<std::string, std::any>;
 using anyvector = std::vector<std::any>;
 
-void create_depth_normal(anim_t &anim) {
-  std::unordered_map<std::string, CImg> sheet_lookup(anim.sheets.begin(), anim.sheets.end());
-  if (!sheet_lookup.contains("ao_depth") || !sheet_lookup.contains("normal")) return;
-
-  const CImg& ao_depth = sheet_lookup.at("ao_depth");
-  const CImg& diffuse = sheet_lookup.at("diffuse");
-  CImg& normal = sheet_lookup.at("normal");
-
-  // Combine the depth with normal and diffuse alpha
-  cimg_forXY(ao_depth, x, y) {
-    if (diffuse(x, y, 0, 3) < 32) {
-      normal(x, y, 0, 0) = 0;
-      normal(x, y, 0, 1) = 0;
-      normal(x, y, 0, 2) = 0;
-      normal(x, y, 0, 3) = 0;
-    }
-    else {
-      normal(x, y, 0, 1) = ao_depth(x, y, 0, 3);
-      normal(x, y, 0, 2) = normal(x, y, 0, 3);
-      normal(x, y, 0, 3) = diffuse(x, y, 0, 3);
-    }
-  }
-
-  anim.sheets.push_back(std::make_pair(std::string("depth_normal"), normal));
-}
-
 std::promise<CImgList> warp_texture_promise[2];
 std::shared_future<CImgList> warp_texture_future[2] = {
   warp_texture_promise[0].get_future(),
   warp_texture_promise[1].get_future()
 };
 
-void create_warp_anim(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets, bool is_low) {
+void create_warp_anim(const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets, bool is_low) {
   CImg target = frames(0);
   CImgList warp_texture_frames = warp_texture_future[is_low].get();
 
@@ -371,49 +348,179 @@ void create_warp_anim(const std::string& name, const CImgList& frames, const sup
   supplement_info_t new_info = info;
   new_info.framecount = warp_anim.size();
   new_info.dst_cells_per_row = get_cells_per_row(warp_anim);
-  output_sheets.emplace(name + "_warp_in", img_list_to_sheet(warp_anim, new_info));
+  output_sheets.emplace("diffuse_warp_in", img_list_to_sheet(warp_anim, new_info));
+}
+
+// source: https://github.com/neivv/animosity/blob/master/src/normal_encoding.rs#L15
+std::valarray<double> decode_normal(std::uint8_t x_in, std::uint8_t y_in) {
+  double x = x_in / 255.0 * 2 - 1;
+  double y = y_in / 255.0 * 2 - 1;
+
+  double xy_sq = x * x + y * y;
+  if (xy_sq > 1) {
+    double len = std::sqrt(xy_sq);
+    return { x / len, y / len, 0 };
+  }
+  else {
+    double z = std::sqrt(1 - xy_sq);
+    return { x, y, z };
+  }
+}
+
+/*
+* Bright: Brightest the sprite can get.
+* Normal:
+*   Red: 0 (left facing) - 255 (right facing)
+*   Alpha: 0 (45 deg down facing) - 255 (45 deg up facing) (or whatever perspective it's using which may not be 45)
+* ao_depth: Alpha: depth, Green: ambient occlusion, 0 (less light) - 255 (more light)
+*/
+void apply_diffuse_lighting(CImgList& sheet, CImgList& bright, CImgList& normal, CImgList& ao, CImgList* emissive) {
+  std::valarray<double> v_sunbeam = { -1 / std::sqrt(3), 1 / std::sqrt(3), 1 / std::sqrt(3) };
+
+  for (int i = 0; i < sheet.size(); ++i) {
+    cimg_forXY(sheet(i), x, y) {
+      // 1. Find out difference from 45deg sunlight angle
+      // 2. If angle is < 180 it gets brighter than original graphic (max `bright`), else darker (at most 1/2 `diffuse`)
+      // 3. Consider ao value as well, maybe.
+
+      // Ignore transparent
+      if (sheet(i, x, y, 0, 3) == 0) continue;
+
+      std::uint8_t& r = sheet(i, x, y, 0, 0);
+      std::uint8_t& g = sheet(i, x, y, 0, 1);
+      std::uint8_t& b = sheet(i, x, y, 0, 2);
+
+      auto v_normal = decode_normal(normal(i, x, y, 0, 0), normal(i, x, y, 0, 3));
+
+      double sunbeam_closeness = 1 - std::acos((v_normal * v_sunbeam).sum()) / std::numbers::pi;
+
+      sunbeam_closeness = sunbeam_closeness * 2 - 1.2;
+      if (sunbeam_closeness < 0) sunbeam_closeness /= 1.2;
+      if (sunbeam_closeness > 0) sunbeam_closeness /= 0.8;
+
+      sunbeam_closeness *= (2 - std::abs(sunbeam_closeness));
+      if (sunbeam_closeness < 0) {
+        sunbeam_closeness *= (2 - std::abs(sunbeam_closeness));
+      }
+      double ao_modifier = ao(i, x, y, 0, 1) / 255.0;
+      sunbeam_closeness *= ao_modifier;
+
+      if (emissive) {
+        double emissive_brightness = (*emissive)(i, x, y, 0) * 0.299 + (*emissive)(i, x, y, 1) * 0.587 + (*emissive)(i, x, y, 2) * 0.0722;
+        sunbeam_closeness *= std::max(1 - emissive_brightness * 5 / 245, 0.0);
+      }
+
+      if (sunbeam_closeness > 0) {
+        sunbeam_closeness *= 0.4; // it's too damn bright
+      }
+      sunbeam_closeness = (sunbeam_closeness + 1);// / 2 * 1.5;
+
+      double brightness_modifier = std::max(0.1, sunbeam_closeness);
+
+      r = std::uint8_t(std::clamp<double>(r * 0.299 * brightness_modifier / 0.299, 0, 255));
+      g = std::uint8_t(std::clamp<double>(g * 0.587 * brightness_modifier / 0.587, 0, 255));
+      b = std::uint8_t(std::clamp<double>(b * 0.114 * brightness_modifier / 0.114, 0, 255));
+    }
+  }
+}
+
+void flip_list(CImgList& img_list, const std::string& type) {
+  bool is_normal = type == "normal";
+
+  for (auto& frame : img_list) {
+    int width = frame.width(), height = frame.height();
+    for (int y = 0; y < height; ++y) {
+      for (int x = 0; x < width / 2; ++x) {
+        int mirror_x = width - x - 1;
+
+        // Red component
+        std::swap(frame(x, y, 0, 0), frame(mirror_x, y, 0, 0));
+        if (is_normal) {
+          frame(x, y, 0, 0) = 255 - frame(x, y, 0, 0);
+          frame(mirror_x, y, 0, 0) = 255 - frame(mirror_x, y, 0, 0);
+        }
+
+        // G, B, A
+        std::swap(frame(x, y, 0, 1), frame(mirror_x, y, 0, 1));
+        std::swap(frame(x, y, 0, 2), frame(mirror_x, y, 0, 2));
+        std::swap(frame(x, y, 0, 3), frame(mirror_x, y, 0, 3));
+      }
+    }
+  }
 }
 
 std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imagedat_info_t& img_info, const supplement_info_t& anim_info, bool is_low) {
+  std::map<std::string, CImgList> transition_lists;
   std::unordered_map<std::string, CImg> output_sheets;
+
+  // Convert each sheet to an image list
   for (auto& sheet : anim.sheets) {
     BGRAtoRGBA(sheet.second);
-
-    if (sheet.first == "ao_depth" || sheet.first == "normal") {
-      continue;
-    }
 
     CImgList frames = convert_to_img_list(anim, sheet.second, anim_info);
 
     if (img_info.flipped) {
-      for (auto& frame : frames) {
-        flip_horizontal(frame);
-      }
-    }
-
-    if (img_info.id == 210 && sheet.first == "diffuse") { // Warp texture
-      warp_texture_promise[is_low].set_value(frames);
-    }
-    if (img_info.warp_overlay && sheet.first == "diffuse") {  // Has warp overlay
-      create_warp_anim(sheet.first, frames, anim_info, output_sheets, is_low);
+      flip_list(frames, sheet.first);
     }
 
     if (anim_info.using_turns) {
-      frames_convert_gfxturns(sheet.first, frames, anim_info, output_sheets);
+      CImgList copy = frames;
+      flip_list(copy, sheet.first);
+      transition_lists.emplace(sheet.first + "_flipped", std::move(copy));
+    }
+
+    transition_lists.emplace(sheet.first, std::move(frames));
+  }
+
+  // Warp texture overlay
+  if (img_info.id == 210) {
+    warp_texture_promise[is_low].set_value(transition_lists["diffuse"]);
+    return {};
+  }
+
+  // Generate a warp overlay if the image needs one
+  // Note: This must be mutually exclusive with gfx turns...
+  if (img_info.warp_overlay) {
+    create_warp_anim(transition_lists["diffuse"], anim_info, output_sheets, is_low);
+  }
+
+  for (auto& list : transition_lists) {
+    if (list.first == "diffuse" || list.first == "diffuse_flipped") {
+      std::string flipped = list.first == "diffuse_flipped" ? "_flipped" : "";
+
+      if (transition_lists.contains("bright" + flipped) && transition_lists.contains("normal" + flipped) && transition_lists.contains("ao_depth" + flipped)) {
+        CImgList* emissive = nullptr;
+        if (transition_lists.contains("emissive" + flipped)) {
+          emissive = &transition_lists["emissive" + flipped];
+        }
+
+        apply_diffuse_lighting(list.second, transition_lists["bright" + flipped], transition_lists["normal" + flipped], transition_lists["ao_depth" + flipped], emissive);
+      }
+    }
+  }
+
+  // Produce actual output sheets
+  // TODO: Fix bug with shadows being cut off
+  for (auto& sheet : anim.sheets) {
+    const std::string& name = sheet.first;
+
+    if (name == "ao_depth" || name == "bright" || name == "normal") continue;
+
+    if (anim_info.using_turns) {
+      frames_convert_gfxturns(name, transition_lists[name], transition_lists[name + "_flipped"], anim_info, output_sheets);
     }
     else {
-      frames_convert_unprocessed(sheet.first, frames, anim_info, output_sheets);
+      frames_convert_unprocessed(name, transition_lists[name], anim_info, output_sheets);
     }
 
     if (extra_processes.contains(img_info.id)) {
       for (const auto& fn : extra_processes[img_info.id]) {
-        fn(sheet.first, frames, anim_info, output_sheets);
+        fn(name, transition_lists[name], anim_info, output_sheets);
       }
     }
   }
 
   split_sheet_result(output_sheets, anim_info);
-
   return output_sheets;
 }
 
@@ -424,8 +531,6 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
   }
 
   supplement_info_t anim_info = generate_supplemental_info(anim, img_info, 0, anim.framedata.size() - 1);
-
-  create_depth_normal(anim);
 
   // Convert to lists
   std::unordered_map<std::string, CImg> output_sheets = convert_to_output(anim, img_info, anim_info, is_low);
