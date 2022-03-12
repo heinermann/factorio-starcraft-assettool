@@ -63,6 +63,12 @@
     <ClCompile Include="cimg_utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\fpng\src\fpng.cpp">
+      <Filter>Third Party</Filter>
+    </ClCompile>
+    <ClCompile Include="..\fpng\src\lodepng.cpp">
+      <Filter>Third Party</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="image_predefs.h">
@@ -110,8 +116,11 @@
     <ClInclude Include="cimg_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ClInclude Include="..\fpng\src\fpng.h">
+      <Filter>Third Party</Filter>
+    </ClInclude>
+    <ClInclude Include="..\fpng\src\lodepng.h">
+      <Filter>Third Party</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

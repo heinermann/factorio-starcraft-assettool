@@ -6,7 +6,9 @@
 #include <chrono>
 #include <algorithm>
 #include <execution>
+#include <random>
 
+#include "../fpng/src/fpng.h"
 #include "casc.h"
 #include "progress.h"
 #include "stopwatch.h"
@@ -33,20 +35,38 @@ void create_output_dirs() {
   }
 }
 
+constexpr const char* CASC_FILEPATHS[] = {
+  "HD2\\anim\\main_%03d.anim",
+  "anim\\main_%03d.anim"
+};
+
+const std::string OUTPUT_PATHS[] = {
+  "graphics/low",
+  "graphics/hd"
+};
+
+void convert_graphic(Casc& casc, const imagedat_info_t& img_def, bool use_hires) {
+  std::vector<std::uint8_t> buffer;
+  std::array<char, 64> filename;
+
+  std::snprintf(filename.data(), filename.size(), CASC_FILEPATHS[use_hires], img_def.id);
+  if (casc.read_file(filename.data(), buffer)) {
+    convert_anim(buffer, img_def, OUTPUT_PATHS[use_hires], !use_hires);
+  }
+}
+
 void convert_graphics(Casc& casc, bool use_hires) {
   ProgressBar progress(use_hires ? "Hi-Res Graphics" : "Lo-Res Graphics", unsigned(image_predefs.size()));
   Stopwatch stopwatch = Stopwatch::create();
 
   const char* filepath = use_hires ? "anim\\main_%03d.anim" : "HD2\\anim\\main_%03d.anim";
   const std::string outputpath = use_hires ? "graphics/hd" : "graphics/low";
-  std::for_each(std::execution::par_unseq, image_predefs.cbegin(), image_predefs.cend(), [&](const imagedat_info_t& img_def) {
-    std::vector<std::uint8_t> buffer;
-    std::array<char, 64> filename;
 
-    std::snprintf(filename.data(), filename.size(), filepath, img_def.id);
-    if (casc.read_file(filename.data(), buffer)) {
-      convert_anim(buffer, img_def, outputpath, !use_hires);
-    }
+  // Prep warp texture for Protoss structures
+  convert_graphic(casc, WARP_TEXTURE, use_hires);
+
+  std::for_each(std::execution::par_unseq, image_predefs.cbegin(), image_predefs.cend(), [&](const imagedat_info_t& img_def) {
+    convert_graphic(casc, img_def, use_hires);
     progress.inc_show_progress();
   });
 
@@ -150,9 +170,19 @@ int main(int argc, const char** argv) {
   std::cin.ignore();
 //#endif
 
+  // Ensure fpng is fast
+  fpng::fpng_init();
+
+  // Shuffle the images to distribute the workload more evenly among threads
+  std::random_device rd;
+  std::mt19937 gen{ rd() };
+  std::ranges::shuffle(image_predefs, gen);
+
+  // Read the casc archive
   Casc casc(argv[1]);
   if (!casc.is_open()) return 2;
 
+  // Convert to Factorio
   create_output_dirs();
   extract_tiles(casc);
   convert_graphics(casc, false);

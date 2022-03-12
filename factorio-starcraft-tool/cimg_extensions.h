@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include "../CImg/CImg.h"
 
 namespace cimg_library {

@@ -1,8 +1,9 @@
 #include "image_predefs.h"
 
+const imagedat_info_t WARP_TEXTURE{210, true, false, 0, false };
+
 std::vector<imagedat_info_t> image_predefs = {
   imagedat_info_t
-  {210, true, false, 0, false }, // Warp Texture
   {0, false, false, 5 }, // Scourge
   {2, false, false, 0, false }, // Scourge Birth
   {3, false, false, 0, false }, // Scourge Death

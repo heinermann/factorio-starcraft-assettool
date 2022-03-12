@@ -12,5 +12,7 @@ struct imagedat_info_t {
   bool flipped;
 };
 
+
+extern const imagedat_info_t WARP_TEXTURE;
 extern std::vector<imagedat_info_t> image_predefs;
 

@@ -7,3 +7,6 @@
 [submodule "simple-dds-image-reader"]
 	path = simple-dds-image-reader
 	url = https://github.com/juho-p/simple-dds-image-reader.git
+[submodule "fpng"]
+	path = fpng
+	url = https://github.com/richgel999/fpng.git
