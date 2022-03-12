@@ -5,11 +5,9 @@
 #include <cstdint>
 
 #include "../simple-dds-image-reader/ddsreader.hpp"
-#include "../CImg/CImg.h"
+#include "cimg.h"
 
 #define TEST(x) if(!(x)) throw std::runtime_error(#x)
-
-using CImg = cimg_library::CImg<std::uint8_t>;
 
 std::vector<CImg> loadGrp(const std::vector<std::uint8_t>& data, const std::optional<std::vector<int>>& requested_indices) {
   thread_local static std::vector<std::uint8_t> dds_work_buffer;

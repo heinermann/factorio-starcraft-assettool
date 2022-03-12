@@ -3,7 +3,7 @@
 #include <vector>
 #include <optional>
 
-#include "../CImg/CImg.h"
+#include "cimg.h"
 
 struct FRAME {
   std::uint32_t unkn1;
@@ -18,4 +18,4 @@ struct GROUP {
   std::uint16_t wFlags;
 };
 
-std::vector<cimg_library::CImg<std::uint8_t>> loadGrp(const std::vector<std::uint8_t>& data, const std::optional<std::vector<int>>& requested_indices = std::nullopt);
+std::vector<CImg> loadGrp(const std::vector<std::uint8_t>& data, const std::optional<std::vector<int>>& requested_indices = std::nullopt);

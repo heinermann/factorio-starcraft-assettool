@@ -5,12 +5,9 @@
 #include <cstdint>
 #include <random>
 
-#include "../CImg/CImg.h"
-
+#include "cimg.h"
 #include "grp.h"
 #include "tile_predefs.h"
-#include "cimg_extensions.h"
-#include "cimg_utils.h"
 
 CImg create_background(std::vector<CImg>& tiles) {
   std::random_device rd;
@@ -60,11 +57,11 @@ void convert_vr4_tiles(const std::vector<std::uint8_t>& data, const std::string&
 
   CImg main_tiles = create_tilesheet(tiles);
   std::string main_path = out_dir + "/creep_main.png";
-  cimg_library::save_png(main_tiles, main_path.c_str());
+  save_png(main_tiles, main_path.c_str());
 
   CImg bg_tiles = create_background(tiles);
   std::string bg_path = out_dir + "/creep_background.png";
-  cimg_library::save_png(bg_tiles, bg_path.c_str());
+  save_png(bg_tiles, bg_path.c_str());
 }
 
 void convert_icons(const std::vector<std::uint8_t>& data, const std::string& out_dir) {
@@ -74,7 +71,7 @@ void convert_icons(const std::vector<std::uint8_t>& data, const std::string& out
     BGRAtoRGBA(icons[i]);
 
     std::string path = out_dir + "/" + std::to_string(i) + ".png";
-    cimg_library::save_png(icons[i], path.c_str());
+    save_png(icons[i], path.c_str());
   }
 }
 
@@ -102,6 +99,6 @@ void convert_cmdicons(const std::vector<std::uint8_t>& data, const std::string& 
     zero_out_transparent(fixed);
 
     std::string path = out_dir + "/" + std::to_string(cmdicon_indices[i]) + ".png";
-    cimg_library::save_png(fixed, path.c_str());
+    save_png(fixed, path.c_str());
   }
 }

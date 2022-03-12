@@ -4,7 +4,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "../CImg/CImg.h"
+#include "cimg.h"
 
 
 // ----- .anim File Data -----

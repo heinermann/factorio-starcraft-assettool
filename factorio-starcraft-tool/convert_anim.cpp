@@ -20,9 +20,7 @@
 #include "anim.h"
 #include "lua_writer.h"
 
-#include "../CImg/CImg.h"
-#include "cimg_extensions.h"
-#include "cimg_utils.h"
+#include "cimg.h"
 #include "vector_util.h"
 
 struct rect_t {
@@ -167,16 +165,18 @@ CImgList convert_to_gfxturns(CImgList& frames, CImgList& mirror_frames, const su
 }
 
 CImgList create_shadows(const CImgList& input, const supplement_info_t& info) {
-  CImgList result;
+  CImgList result(32 * info.img.gfx_turns_frames, input(0).height(), input(0).width(), 1, 2);
   for (int turn = 0; turn < 32; ++turn) {
     int shadow_turn = (turn - 8 + 32) % 32;
     for (unsigned i = 0; i < info.img.gfx_turns_frames; ++i) {
       const CImg& input_img = input(shadow_turn * info.img.gfx_turns_frames + i);
+
+      // TODO: Improve perf, combine rotate and resize to reduce realloc count
       CImg shadow = get_rotate90_black(input_img);
       //mask_to_black(shadow);
       shadow.resize(int(shadow.width() * 1.4), int(shadow.height() * 0.8));
 
-      result.insert(std::move(shadow));
+      result(turn * info.img.gfx_turns_frames + i).swap(shadow);
     }
   }
   return result;
@@ -191,12 +191,12 @@ void frames_convert_unprocessed(const std::string& name, const CImgList& frames,
 }
 
 // Function to split the sheets that are too large
-// TODO: Bug that splits some graphics on the graphic itself
+// TODO: Bug that splits shadows incorrectly
 void split_sheet_result(std::unordered_map<std::string, CImg>& sheets, const supplement_info_t& info) {
   std::unordered_map<std::string, CImg> new_sheets;
   for (auto& [name, sheet] : sheets) {
     if (sheet.height() <= 8192) {
-      new_sheets.emplace(name, sheet);
+      new_sheets.emplace(name, std::move(sheet));
       continue;
     }
 
@@ -217,7 +217,6 @@ void split_sheet_result(std::unordered_map<std::string, CImg>& sheets, const sup
 
 void frames_convert_gfxturns(const std::string& name, CImgList& frames, CImgList& mirror_frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
   CImgList turn_frames = convert_to_gfxturns(frames, mirror_frames, info);
-  output_sheets.emplace(name, img_list_to_turns_sheet(turn_frames, info));
 
   // Exceptions for Archon & Dark Archon which effectively glow but should probably also have shadows
   if (name == "diffuse" && ((!info.img.draw_as_glow && !info.img.draw_as_shadow) || info.img.id == 135 || info.img.id == 926)) {
@@ -234,6 +233,7 @@ void frames_convert_gfxturns(const std::string& name, CImgList& frames, CImgList
   else if (name == "teamcolor") {
     output_sheets["teamcolor"] = output_sheets["diffuse"] & output_sheets["teamcolor"];
   }
+  output_sheets.emplace(name, std::move(img_list_to_turns_sheet(turn_frames, info)));
 }
 
 struct frames_convert_extra  {
@@ -411,6 +411,7 @@ void apply_diffuse_lighting(CImgList& sheet, CImgList& bright, CImgList& normal,
   }
 }
 
+// TODO: Perf improvement - copy_flipped instead of copy then flip
 void flip_list(CImgList& img_list, const std::string& type) {
   bool is_normal = type == "normal";
 
@@ -451,6 +452,7 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
     }
 
     if (anim_info.using_turns) {
+      // TODO: Combine this into flip+copy together
       CImgList copy = frames;
       flip_list(copy, sheet.first);
       transition_lists.emplace(sheet.first + "_flipped", std::move(copy));
@@ -537,7 +539,7 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
   for (auto& sheet : output_sheets) {
     std::snprintf(filename.data(), filename.size(), "%s/main_%03d%s_%s.png", out_dir.c_str(), img_info.id, img_info.flipped ? "_flipped" : "", sheet.first.c_str());
     zero_out_transparent(sheet.second);
-    cimg_library::save_png(sheet.second, filename.data());
+    save_png(sheet.second, filename.data());
   }
 
   if (img_info.flipped) return;

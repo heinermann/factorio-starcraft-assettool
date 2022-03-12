@@ -45,9 +45,6 @@
     <ClCompile Include="stopwatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cimg_extensions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="sound_predefs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,7 +57,7 @@
     <ClCompile Include="convert_tiles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="cimg_utils.cpp">
+    <ClCompile Include="cimg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\fpng\src\fpng.cpp">
@@ -98,9 +95,6 @@
     <ClInclude Include="stopwatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cimg_extensions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="sound_predefs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -113,7 +107,7 @@
     <ClInclude Include="convert_tiles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cimg_utils.h">
+    <ClInclude Include="cimg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\fpng\src\fpng.h">
@@ -123,6 +117,9 @@
       <Filter>Third Party</Filter>
     </ClInclude>
     <ClInclude Include="vector_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cimglist_plugin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,7 +4,7 @@
 #include <cstdio>
 
 #include "../simple-dds-image-reader/ddsreader.hpp"
-#include "../CImg/CImg.h"
+#include "cimg.h"
 
 #define TEST(x) if(!(x)) throw std::runtime_error(#x)
 
@@ -13,8 +13,6 @@ constexpr uint32_t MAKEFOURCC(char a, char b, char c, char d) {
 }
 
 constexpr std::uint32_t ANIM_HDR = MAKEFOURCC('A', 'N', 'I', 'M');
-
-using CImg = cimg_library::CImg<std::uint8_t>;
 
 anim_t loadAnim(const std::vector<std::uint8_t>& data) {
   thread_local static std::vector<std::uint8_t> dds_work_buffer;
