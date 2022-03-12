@@ -217,7 +217,8 @@ void frames_convert_gfxturns(const std::string& name, const CImgList& frames, co
   CImgList turn_frames = convert_to_gfxturns(frames, mirror_frames, info);
   output_sheets.emplace(name, img_list_to_turns_sheet(turn_frames, info));
 
-  if (name == "diffuse" && !info.img.draw_as_glow && !info.img.draw_as_shadow) {
+  // Exceptions for Archon & Dark Archon which effectively glow but should probably also have shadows
+  if (name == "diffuse" && ((!info.img.draw_as_glow && !info.img.draw_as_shadow) || info.img.id == 135 || info.img.id == 926)) {
     CImgList shadows = create_shadows(turn_frames, info);
 
     supplement_info_t shadow_info = info;
@@ -484,17 +485,20 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
     create_warp_anim(transition_lists["diffuse"], anim_info, output_sheets, is_low);
   }
 
-  for (auto& list : transition_lists) {
-    if (list.first == "diffuse" || list.first == "diffuse_flipped") {
-      std::string flipped = list.first == "diffuse_flipped" ? "_flipped" : "";
+  // Apply lighting effects to make the graphics mimic those of Factorio
+  if (!img_info.draw_as_glow) {
+    for (auto& list : transition_lists) {
+      if (list.first == "diffuse" || list.first == "diffuse_flipped") {
+        std::string flipped = list.first == "diffuse_flipped" ? "_flipped" : "";
 
-      if (transition_lists.contains("bright" + flipped) && transition_lists.contains("normal" + flipped) && transition_lists.contains("ao_depth" + flipped)) {
-        CImgList* emissive = nullptr;
-        if (transition_lists.contains("emissive" + flipped)) {
-          emissive = &transition_lists["emissive" + flipped];
+        if (transition_lists.contains("bright" + flipped) && transition_lists.contains("normal" + flipped) && transition_lists.contains("ao_depth" + flipped)) {
+          CImgList* emissive = nullptr;
+          if (transition_lists.contains("emissive" + flipped)) {
+            emissive = &transition_lists["emissive" + flipped];
+          }
+
+          apply_diffuse_lighting(list.second, transition_lists["bright" + flipped], transition_lists["normal" + flipped], transition_lists["ao_depth" + flipped], emissive);
         }
-
-        apply_diffuse_lighting(list.second, transition_lists["bright" + flipped], transition_lists["normal" + flipped], transition_lists["ao_depth" + flipped], emissive);
       }
     }
   }
@@ -504,7 +508,7 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
   for (auto& sheet : anim.sheets) {
     const std::string& name = sheet.first;
 
-    if (name == "ao_depth" || name == "bright" || name == "normal") continue;
+    if (name == "bright" || name == "normal") continue;
 
     if (anim_info.using_turns) {
       frames_convert_gfxturns(name, transition_lists[name], transition_lists[name + "_flipped"], anim_info, output_sheets);
@@ -517,6 +521,13 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
       for (const auto& fn : extra_processes[img_info.id]) {
         fn(name, transition_lists[name], anim_info, output_sheets);
       }
+    }
+  }
+
+  if (output_sheets.contains("ao_depth")) {
+    CImg& img = output_sheets["ao_depth"];
+    cimg_forXY(img, x, y) {
+      img(x, y, 0, 2) = img(x, y, 0, 3);
     }
   }
 
