@@ -14,7 +14,7 @@
 #include <fstream>
 #include <future>
 #include <numbers>
-#include <valarray>
+#include <tuple>
 
 #include "image_predefs.h"
 #include "anim.h"
@@ -23,6 +23,7 @@
 #include "../CImg/CImg.h"
 #include "cimg_extensions.h"
 #include "cimg_utils.h"
+#include "vector_util.h"
 
 struct rect_t {
   int left, top, right, bottom;
@@ -148,17 +149,18 @@ CImg img_list_to_turns_sheet(const CImgList& frames, const supplement_info_t& in
   return result;
 }
 
-CImgList convert_to_gfxturns(const CImgList& frames, const CImgList& mirror_frames, const supplement_info_t& info) {
+CImgList convert_to_gfxturns(CImgList& frames, CImgList& mirror_frames, const supplement_info_t& info) {
   // Create turns sheet
   CImgList newframes(info.img.gfx_turns_frames * 32);
   for (unsigned i = 0; i < info.img.gfx_turns_frames; ++i) {
     for (int turn = 0; turn < 17; ++turn) {
-      newframes(turn * info.img.gfx_turns_frames + i) = frames(i * 17 + turn);
+      
+      newframes(turn * info.img.gfx_turns_frames + i).swap(frames(i * 17 + turn));
     }
 
     // Mirror images for missing turns
     for (int turn = 17; turn < 32; ++turn) {
-      newframes(turn * info.img.gfx_turns_frames + i) = mirror_frames(i * 17 + 16 - (turn - 16));// newframes((32 - turn) * info.img.gfx_turns_frames + i).get_mirror("x");
+      newframes(turn * info.img.gfx_turns_frames + i).swap(mirror_frames(i * 17 + 16 - (turn - 16)));// newframes((32 - turn) * info.img.gfx_turns_frames + i).get_mirror("x");
     }
   }
   return newframes;
@@ -177,7 +179,7 @@ CImgList create_shadows(const CImgList& input, const supplement_info_t& info) {
       result.insert(std::move(shadow));
     }
   }
-  return std::move(result);
+  return result;
 }
 
 void frames_convert_unprocessed(const std::string& name, const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
@@ -213,7 +215,7 @@ void split_sheet_result(std::unordered_map<std::string, CImg>& sheets, const sup
   sheets.swap(new_sheets);
 }
 
-void frames_convert_gfxturns(const std::string& name, const CImgList& frames, const CImgList& mirror_frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
+void frames_convert_gfxturns(const std::string& name, CImgList& frames, CImgList& mirror_frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
   CImgList turn_frames = convert_to_gfxturns(frames, mirror_frames, info);
   output_sheets.emplace(name, img_list_to_turns_sheet(turn_frames, info));
 
@@ -352,22 +354,6 @@ void create_warp_anim(const CImgList& frames, const supplement_info_t& info, std
   output_sheets.emplace("diffuse_warp_in", img_list_to_sheet(warp_anim, new_info));
 }
 
-// source: https://github.com/neivv/animosity/blob/master/src/normal_encoding.rs#L15
-std::valarray<double> decode_normal(std::uint8_t x_in, std::uint8_t y_in) {
-  double x = x_in / 255.0 * 2 - 1;
-  double y = y_in / 255.0 * 2 - 1;
-
-  double xy_sq = x * x + y * y;
-  if (xy_sq > 1) {
-    double len = std::sqrt(xy_sq);
-    return { x / len, y / len, 0 };
-  }
-  else {
-    double z = std::sqrt(1 - xy_sq);
-    return { x, y, z };
-  }
-}
-
 /*
 * Bright: Brightest the sprite can get.
 * Normal:
@@ -376,7 +362,7 @@ std::valarray<double> decode_normal(std::uint8_t x_in, std::uint8_t y_in) {
 * ao_depth: Alpha: depth, Green: ambient occlusion, 0 (less light) - 255 (more light)
 */
 void apply_diffuse_lighting(CImgList& sheet, CImgList& bright, CImgList& normal, CImgList& ao, CImgList* emissive) {
-  std::valarray<double> v_sunbeam = { -1 / std::sqrt(3), 1 / std::sqrt(3), 1 / std::sqrt(3) };
+  Vec3<double> v_sunbeam = { -1 / std::sqrt(3), 1 / std::sqrt(3), 1 / std::sqrt(3) };
 
   for (int i = 0; i < sheet.size(); ++i) {
     cimg_forXY(sheet(i), x, y) {

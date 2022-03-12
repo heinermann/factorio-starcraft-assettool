@@ -192,6 +192,7 @@
     <ClInclude Include="sound_predefs.h" />
     <ClInclude Include="stopwatch.h" />
     <ClInclude Include="tile_predefs.h" />
+    <ClInclude Include="vector_util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

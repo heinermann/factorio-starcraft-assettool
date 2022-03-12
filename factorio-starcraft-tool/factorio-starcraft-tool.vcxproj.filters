@@ -122,5 +122,8 @@
     <ClInclude Include="..\fpng\src\lodepng.h">
       <Filter>Third Party</Filter>
     </ClInclude>
+    <ClInclude Include="vector_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
