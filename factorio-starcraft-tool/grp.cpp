@@ -48,7 +48,7 @@ std::vector<CImg> loadGrp(const std::vector<std::uint8_t>& data, const std::opti
     std::fwrite(dds.data.data(), 1, dds.data.size(), ftmp);
     std::fseek(ftmp, 0, SEEK_SET);
 
-    CImg cimg(unsigned(dds.width), unsigned(dds.height), 1, 4);
+    CImg cimg;
     cimg.load_rgba(ftmp, dds.width, dds.height);
     std::fclose(ftmp);
 

@@ -59,15 +59,21 @@ void convert_graphics(Casc& casc, bool use_hires) {
   ProgressBar progress(use_hires ? "Hi-Res Graphics" : "Lo-Res Graphics", unsigned(image_predefs.size()));
   Stopwatch stopwatch = Stopwatch::create();
 
-  const char* filepath = use_hires ? "anim\\main_%03d.anim" : "HD2\\anim\\main_%03d.anim";
-  const std::string outputpath = use_hires ? "graphics/hd" : "graphics/low";
-
   // Prep warp texture for Protoss structures
   convert_graphic(casc, WARP_TEXTURE, use_hires);
 
-  std::for_each(std::execution::par_unseq, image_predefs.cbegin(), image_predefs.cend(), [&](const imagedat_info_t& img_def) {
-    convert_graphic(casc, img_def, use_hires);
-    progress.inc_show_progress();
+  size_t range_size = image_predefs.size() / std::thread::hardware_concurrency();
+  std::vector<std::vector<imagedat_info_t>> data;
+  for (size_t i = 0; i < image_predefs.size(); i += range_size) {
+    auto target = image_predefs.begin() + i;
+    data.emplace_back(target, target + std::min(range_size, image_predefs.size() - i));
+  }
+
+  std::for_each(std::execution::par_unseq, data.cbegin(), data.cend(), [&](const std::vector<imagedat_info_t>& img_defs) {
+    for (const imagedat_info_t& img_def : img_defs) {
+      convert_graphic(casc, img_def, use_hires);
+      progress.inc_show_progress();
+    }
   });
 
   stopwatch.stop();
@@ -78,7 +84,7 @@ void extract_sounds(Casc& casc) {
   ProgressBar progress("Sounds", unsigned(sound_predefs.size()));
   Stopwatch stopwatch = Stopwatch::create();
 
-  std::for_each(std::execution::par_unseq, sound_predefs.cbegin(), sound_predefs.cend(), [&](const std::string& snd_def) {
+  for (const std::string& snd_def : sound_predefs) {
     std::vector<std::uint8_t> buffer;
     if (casc.read_file(snd_def, buffer)) {
       std::string snd_path = snd_def;
@@ -94,7 +100,7 @@ void extract_sounds(Casc& casc) {
       std::cerr << "Failed to load " << snd_def << std::endl;
     }
     progress.inc_show_progress();
-  });
+  }
 
   stopwatch.stop();
   std::cerr << "\nCompleted in " << stopwatch.milliseconds() << "ms" << std::endl;

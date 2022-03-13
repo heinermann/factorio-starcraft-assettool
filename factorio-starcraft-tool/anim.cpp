@@ -43,6 +43,8 @@ anim_t loadAnim(const std::vector<std::uint8_t>& data) {
   std::uint16_t texw = entry->imgs[0].texWidth;
   std::uint16_t texh = entry->imgs[0].texHeight;
 
+  result.sheets.reserve(header->layers);
+
   // Load DDS files
   for (int i = 0; i < header->layers; ++i) {
     // Skip the ones we don't care about
@@ -71,7 +73,7 @@ anim_t loadAnim(const std::vector<std::uint8_t>& data) {
     std::fwrite(dds.data.data(), 1, dds.data.size(), ftmp);
     std::fseek(ftmp, 0, SEEK_SET);
 
-    CImg cimg(unsigned(dds.width), unsigned(dds.height), 1, 4);
+    CImg cimg;
     cimg.load_rgba(ftmp, dds.width, dds.height);
     std::fclose(ftmp);
 

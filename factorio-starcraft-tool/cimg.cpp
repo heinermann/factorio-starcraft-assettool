@@ -11,23 +11,18 @@
 CImg get_rotate90_black(const CImg& img) {
   CImg result(img.height(), img.width(), 1, 2);
   int hm1 = img.height() - 1;
-  for (int y = 0; y < img.height(); ++y) {
-    for (int x = 0; x < img.width(); ++x) {
-      result(hm1 - y, x, 0, 0) = 0;
-      result(hm1 - y, x, 0, 1) = img(x, y, 0, 3);
-    }
+  cimg_forXY(img, x, y) {
+    result(hm1 - y, x, 0, 0) = 0;
+    result(hm1 - y, x, 0, 1) = img(x, y, 0, 3);
   }
   return result;
 }
 
-// TODO: Optimize with memcpy (note CImg channels are separate from each other)
 void draw_image(CImg& dst, int dst_x, int dst_y, CImg& src, int src_x, int src_y, int width, int height) {
   int channels = std::min(dst.spectrum(), src.spectrum());
   for (int y = 0; y < height; ++y) {
-    for (int x = 0; x < width; ++x) {
-      for (int c = 0; c < channels; ++c) {
-        dst(dst_x + x, dst_y + y, 0, c) = src(src_x + x, src_y + y, 0, c);
-      }
+    for (int c = 0; c < channels; ++c) {
+      memcpy(dst.data(dst_x, dst_y + y, 0, c), src.data(src_x, src_y + y, 0, c), width);
     }
   }
 }
@@ -40,11 +35,25 @@ void BGRAtoRGBA(CImg& img) {
 
 // Zeroing out transparent pixels saves a lot of space on all sheets
 void zero_out_transparent(CImg& img) {
-  cimg_forXY(img, x, y) {
-    if (img(x, y, 0, img.spectrum() - 1) != 0) continue;
+  int total_size = img.width() * img.height();
+  int run_length = 0;
 
-    for (int c = 0; c < img.spectrum() - 1; ++c)
-      img(x, y, 0, c) = 0;
+  std::uint8_t* a_data = img.data(0, 0, 0, img.spectrum() - 1);
+
+  for (int i = 0; i < total_size;) {
+    while (a_data[i + run_length] == 0 && i + run_length < total_size) {
+      run_length++;
+    }
+
+    for (int c = 0; c < img.spectrum() - 1; ++c) {
+      std::memset(&img.data(0, 0, 0, c)[i], 0, run_length);
+    }
+
+    i += run_length;
+    run_length = 0;
+    while (a_data[i] != 0 && i < total_size) {
+      i++;
+    }
   }
 }
 

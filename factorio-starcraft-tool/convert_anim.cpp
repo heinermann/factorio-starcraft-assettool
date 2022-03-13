@@ -56,7 +56,7 @@ unsigned get_cells_per_row(const supplement_info_t& info) {
   return std::clamp(4096 / info.dst_frame_width, 1U, framecount);
 }
 
-supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_info_t& img_info, int first_frame, int last_frame) {
+supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_info_t& img_info, unsigned first_frame, unsigned last_frame) {
   supplement_info_t result = {};
   result.img = img_info;
   result.framecount = unsigned(anim.framedata.size());
@@ -65,7 +65,7 @@ supplement_info_t generate_supplemental_info(const anim_t& anim, const imagedat_
 
   constexpr int max_int = std::numeric_limits<int>::max();
   rect_t margins = { max_int, max_int, max_int, max_int };
-  for (int i = first_frame; i <= last_frame; ++i) {
+  for (unsigned i = first_frame; i <= last_frame; ++i) {
     const frame_t& f = anim.framedata[i];
     margins.left = std::min(margins.left, int(f.xoffs));    // Note: can be negative
     margins.top = std::min(margins.top, int(f.yoffs));
@@ -173,7 +173,6 @@ CImgList create_shadows(const CImgList& input, const supplement_info_t& info) {
 
       // TODO: Improve perf, combine rotate and resize to reduce realloc count
       CImg shadow = get_rotate90_black(input_img);
-      //mask_to_black(shadow);
       shadow.resize(int(shadow.width() * 1.4), int(shadow.height() * 0.8));
 
       result(turn * info.img.gfx_turns_frames + i).swap(shadow);
@@ -301,31 +300,34 @@ void create_warp_anim(const CImgList& frames, const supplement_info_t& info, std
   CImg target = frames(0);
   CImgList warp_texture_frames = warp_texture_future[is_low].get();
 
-  CImgList warp_anim;
+  unsigned expected_frame_count = warp_texture_frames.size() + 16;
+  CImgList warp_anim(expected_frame_count, target.width(), target.height(), 1, 4);
 
   // Create warp-texture part of animation
   //constexpr double step = 1.0 / 14;
   constexpr double step = 1.0 / 20;
   double fade_amount = 0.1;
+  int index = 0;
   for (CImg& warp_frame : warp_texture_frames) {
     //int new_size = std::max({ target.width(), target.height() });
     warp_frame.resize(target.width(), target.height(), 1, 3, 1);
 
     CImg new_frame = target;
     cimg_forXY(new_frame, x, y) {
-      std::uint8_t& r = warp_frame(x, y, 0, 0);
-      std::uint8_t& g = warp_frame(x, y, 0, 1);
-      std::uint8_t& b = warp_frame(x, y, 0, 2);
-      std::uint8_t& a = new_frame(x, y, 0, 3);
+      std::uint8_t r = warp_frame(x, y, 0, 0);
+      std::uint8_t g = warp_frame(x, y, 0, 1);
+      std::uint8_t b = warp_frame(x, y, 0, 2);
+      std::uint8_t a = new_frame(x, y, 0, 3);
 
-      new_frame(x, y, 0, 0) = std::min(64 * fade_amount + r * fade_amount, 255.0);
-      new_frame(x, y, 0, 1) = std::min(64 * fade_amount + g * fade_amount, 255.0);
-      new_frame(x, y, 0, 2) = std::min(64 * fade_amount + b * fade_amount, 255.0);
+      new_frame(x, y, 0, 0) = std::uint8_t(std::min(64 * fade_amount + r * fade_amount, 255.0));
+      new_frame(x, y, 0, 1) = std::uint8_t(std::min(64 * fade_amount + g * fade_amount, 255.0));
+      new_frame(x, y, 0, 2) = std::uint8_t(std::min(64 * fade_amount + b * fade_amount, 255.0));
       if (a > 128)
-        new_frame(x, y, 0, 3) = std::min(128 * fade_amount + a * fade_amount, 255.0);
+        new_frame(x, y, 0, 3) = std::uint8_t(std::min(128 * fade_amount + a * fade_amount, 255.0));
     }
     fade_amount += step;
-    warp_anim.push_back(new_frame);
+    warp_anim(index).swap(new_frame);
+    index++;
   }
 
   // Create fade-in part of animation
@@ -342,14 +344,15 @@ void create_warp_anim(const CImgList& frames, const supplement_info_t& info, std
       g = 255;
       b = 255;
       if (a > 0) {
-        a = std::min(a * scale, 255.0);
+        a = std::uint8_t(std::min(a * scale, 255.0));
       }
     }
-    warp_anim.push_back(new_frame);
+    warp_anim(index).swap(new_frame);
+    index++;
   }
 
   supplement_info_t new_info = info;
-  new_info.framecount = warp_anim.size();
+  new_info.framecount = expected_frame_count;
   new_info.dst_cells_per_row = get_cells_per_row(warp_anim);
   output_sheets.emplace("diffuse_warp_in", img_list_to_sheet(warp_anim, new_info));
 }
@@ -364,7 +367,7 @@ void create_warp_anim(const CImgList& frames, const supplement_info_t& info, std
 void apply_diffuse_lighting(CImgList& sheet, CImgList& bright, CImgList& normal, CImgList& ao, CImgList* emissive) {
   Vec3<double> v_sunbeam = { -1 / std::sqrt(3), 1 / std::sqrt(3), 1 / std::sqrt(3) };
 
-  for (int i = 0; i < sheet.size(); ++i) {
+  for (unsigned i = 0; i < sheet.size(); ++i) {
     cimg_forXY(sheet(i), x, y) {
       // 1. Find out difference from 45deg sunlight angle
       // 2. If angle is < 180 it gets brighter than original graphic (max `bright`), else darker (at most 1/2 `diffuse`)
@@ -416,22 +419,11 @@ void flip_list(CImgList& img_list, const std::string& type) {
   bool is_normal = type == "normal";
 
   for (auto& frame : img_list) {
-    int width = frame.width(), height = frame.height();
-    for (int y = 0; y < height; ++y) {
-      for (int x = 0; x < width / 2; ++x) {
-        int mirror_x = width - x - 1;
+    frame.mirror('x');
 
-        // Red component
-        std::swap(frame(x, y, 0, 0), frame(mirror_x, y, 0, 0));
-        if (is_normal) {
-          frame(x, y, 0, 0) = 255 - frame(x, y, 0, 0);
-          frame(mirror_x, y, 0, 0) = 255 - frame(mirror_x, y, 0, 0);
-        }
-
-        // G, B, A
-        std::swap(frame(x, y, 0, 1), frame(mirror_x, y, 0, 1));
-        std::swap(frame(x, y, 0, 2), frame(mirror_x, y, 0, 2));
-        std::swap(frame(x, y, 0, 3), frame(mirror_x, y, 0, 3));
+    if (is_normal) {
+      cimg_forXY(frame, x, y) {
+        frame(x, y, 0, 0) = 255 - frame(x, y, 0, 0);
       }
     }
   }
@@ -529,7 +521,7 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
     anim.make_lowdef();
   }
 
-  supplement_info_t anim_info = generate_supplemental_info(anim, img_info, 0, anim.framedata.size() - 1);
+  supplement_info_t anim_info = generate_supplemental_info(anim, img_info, 0, unsigned(anim.framedata.size()) - 1);
 
   // Convert to lists
   std::unordered_map<std::string, CImg> output_sheets = convert_to_output(anim, img_info, anim_info, is_low);

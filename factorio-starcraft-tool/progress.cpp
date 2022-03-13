@@ -28,7 +28,7 @@ void ProgressBar::display(std::ostream& ostream) {
 
   char oldfill = ostream.fill();
 
-  unsigned num_progress_chars = width - name.size() - 8;
+  unsigned num_progress_chars = width - unsigned(name.size()) - 8;
   unsigned num_filled_chars = num_progress_chars * current_value / max_value;
   unsigned num_unfilled_chars = num_progress_chars - num_filled_chars;
   unsigned percentage = 100 * current_value / max_value;
