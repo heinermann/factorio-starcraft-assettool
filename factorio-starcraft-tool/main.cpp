@@ -15,6 +15,7 @@
 
 #include "convert_anim.h"
 #include "convert_tiles.h"
+#include "convert_lit.h"
 #include "image_predefs.h"
 #include "sound_predefs.h"
 
@@ -165,6 +166,21 @@ void extract_tiles(Casc& casc) {
   std::cerr << "\nCompleted in " << stopwatch.milliseconds() << "ms" << std::endl;
 }
 
+void extract_lighting(Casc& casc) {
+  ProgressBar progress("Lighting", 1);
+
+  const char* filepath = "anim\\main.lit";
+
+  std::vector<std::uint8_t> buffer;
+  if (casc.read_file(filepath, buffer)) {
+    convert_litfile(buffer);
+  }
+  else {
+    std::cerr << "Failed to load " << filepath << std::endl;
+  }
+  progress.inc_show_progress();
+}
+
 int main(int argc, const char** argv) {
   if (argc < 2) {
     std::cerr << "Requires an argument - StarCraft: Remastered installation directory." << std::endl;
@@ -194,6 +210,7 @@ int main(int argc, const char** argv) {
   convert_graphics(casc, false);
   convert_graphics(casc, true);
   extract_sounds(casc);
+  extract_lighting(casc);
 
   return 0;
 }

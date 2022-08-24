@@ -88,8 +88,8 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,8 +109,9 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,8 +130,8 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,8 +151,9 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -171,6 +173,7 @@
     <ClCompile Include="convert_tiles.cpp" />
     <ClCompile Include="grp.cpp" />
     <ClCompile Include="image_predefs.cpp" />
+    <ClCompile Include="convert_lit.cpp" />
     <ClCompile Include="lua_writer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="progress.cpp" />
@@ -196,6 +199,7 @@
     <ClInclude Include="convert_tiles.h" />
     <ClInclude Include="grp.h" />
     <ClInclude Include="image_predefs.h" />
+    <ClInclude Include="convert_lit.h" />
     <ClInclude Include="lua_writer.h" />
     <ClInclude Include="progress.h" />
     <ClInclude Include="sound_predefs.h" />

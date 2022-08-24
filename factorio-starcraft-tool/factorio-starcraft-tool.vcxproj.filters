@@ -66,6 +66,9 @@
     <ClCompile Include="..\fpng\src\lodepng.cpp">
       <Filter>Third Party</Filter>
     </ClCompile>
+    <ClCompile Include="convert_lit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="image_predefs.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cimglist_plugin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="convert_lit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
