@@ -365,7 +365,7 @@ std::vector<imagedat_info_t> image_predefs = {
   {516, false, false }, // Queen Spell Holder
   {517, true, false }, // Consume
   {518, true, false, 6 }, // Guardian Attack Overlay
-  //{519, true, false }, // Dual Photon Blasters Hit   // TODO: WTF?
+  {519, true, false }, // Dual Photon Blasters Hit
   {520, true, false }, // Particle Beam Hit
   {521, false, false, 1 }, // Anti-Matter Missile
   {522, true, false, 1 }, // Pulse Cannon
