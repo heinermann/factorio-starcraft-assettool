@@ -229,10 +229,11 @@ void frames_convert_gfxturns(const std::string& name, CImgList& frames, CImgList
 
     output_sheets.emplace("shadow", img_list_to_turns_sheet(shadows, shadow_info));
   }
-  else if (name == "teamcolor") {
-    output_sheets["teamcolor"] = output_sheets["diffuse"] & output_sheets["teamcolor"];
+  CImg result = img_list_to_turns_sheet(turn_frames, info);
+  if (name == "teamcolor") {
+    result = output_sheets["diffuse"] & result;
   }
-  output_sheets.emplace(name, std::move(img_list_to_turns_sheet(turn_frames, info)));
+  output_sheets.emplace(name, std::move(result));
 }
 
 struct frames_convert_extra  {
