@@ -194,12 +194,17 @@ void frames_convert_unprocessed(const std::string& name, const CImgList& frames,
 void split_sheet_result(std::unordered_map<std::string, CImg>& sheets, const supplement_info_t& info) {
   std::unordered_map<std::string, CImg> new_sheets;
   for (auto& [name, sheet] : sheets) {
-    if (sheet.height() <= 8192) {
+    int max_height = 8192;
+    if (name == "depth_normal" && !info.using_turns) {
+      max_height = info.dst_frame_height;
+    }
+
+    if (sheet.height() <= max_height) {
       new_sheets.emplace(name, std::move(sheet));
       continue;
     }
 
-    int vframes_per_page = 8192 / info.dst_frame_height;
+    int vframes_per_page = max_height / info.dst_frame_height;
     int page_height = vframes_per_page * info.dst_frame_height;
     int width = sheet.width();
 
@@ -430,6 +435,21 @@ void flip_list(CImgList& img_list, const std::string& type) {
   }
 }
 
+void process_images_to_output(const std::string& name, std::map<std::string, CImgList> &transition_lists, std::unordered_map<std::string, CImg> &output_sheets, const imagedat_info_t& img_info, const supplement_info_t& anim_info) {
+  if (anim_info.using_turns) {
+    frames_convert_gfxturns(name, transition_lists[name], transition_lists[name + "_flipped"], anim_info, output_sheets);
+  }
+  else {
+    frames_convert_unprocessed(name, transition_lists[name], anim_info, output_sheets);
+  }
+
+  if (extra_processes.contains(img_info.id)) {
+    for (const auto& fn : extra_processes[img_info.id]) {
+      fn(name, transition_lists[name], anim_info, output_sheets);
+    }
+  }
+}
+
 std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imagedat_info_t& img_info, const supplement_info_t& anim_info, bool is_low) {
   std::map<std::string, CImgList> transition_lists;
   std::unordered_map<std::string, CImg> output_sheets;
@@ -466,6 +486,25 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
     create_warp_anim(transition_lists["diffuse"], anim_info, output_sheets, is_low);
   }
 
+  if (!img_info.gfx_turns_frames && transition_lists.contains("normal") && transition_lists.contains("ao_depth")) {
+    CImgList diffuse = transition_lists["diffuse"];
+    CImgList normal = transition_lists["normal"];
+    CImgList depth = transition_lists["ao_depth"];
+    CImgList result{};
+
+    for (unsigned i = 0; i < diffuse.size(); i++) {
+      CImg newImg(diffuse(i).width(), diffuse(i).height(), 1, 4, 0);
+      cimg_forXY(newImg, x, y) {
+        newImg(x, y, 0, 0) = normal(i)(x, y, 0, 0);
+        newImg(x, y, 0, 1) = normal(i)(x, y, 0, 3);
+        newImg(x, y, 0, 2) = depth(i)(x, y, 0, 3);
+        newImg(x, y, 0, 3) = diffuse(i)(x, y, 0, 3);
+      }
+      result.push_back(std::move(newImg));
+    }
+    transition_lists.emplace("depth_normal", result);
+  }
+
   // Apply lighting effects to make the graphics mimic those of Factorio
   if (!img_info.draw_as_glow) {
     for (auto& list : transition_lists) {
@@ -489,27 +528,12 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
   for (auto& sheet : anim.sheets) {
     const std::string& name = sheet.first;
 
-    if (name == "bright" || name == "normal") continue;
+    if (name == "bright" || name == "ao_depth" || name == "normal") continue;
 
-    if (anim_info.using_turns) {
-      frames_convert_gfxturns(name, transition_lists[name], transition_lists[name + "_flipped"], anim_info, output_sheets);
-    }
-    else {
-      frames_convert_unprocessed(name, transition_lists[name], anim_info, output_sheets);
-    }
-
-    if (extra_processes.contains(img_info.id)) {
-      for (const auto& fn : extra_processes[img_info.id]) {
-        fn(name, transition_lists[name], anim_info, output_sheets);
-      }
-    }
+    process_images_to_output(name, transition_lists, output_sheets, img_info, anim_info);
   }
-
-  if (output_sheets.contains("ao_depth")) {
-    CImg& img = output_sheets["ao_depth"];
-    cimg_forXY(img, x, y) {
-      img(x, y, 0, 2) = img(x, y, 0, 3);
-    }
+  if (transition_lists.contains("depth_normal")) {
+    process_images_to_output("depth_normal", transition_lists, output_sheets, img_info, anim_info);
   }
 
   split_sheet_result(output_sheets, anim_info);
