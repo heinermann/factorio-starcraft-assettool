@@ -57,12 +57,38 @@ void zero_out_transparent(CImg& img) {
   }
 }
 
+CImg load_png(const char* const filename) {
+  std::vector<std::uint8_t> data;
+  std::uint32_t width, height, channels;
+  if (fpng::fpng_decode_file(filename, data, width, height, channels, 4) != 0) {
+    std::cerr << "Failed to decode \"" << filename << "\" (fpng)" << std::endl;
+    return {};
+  }
+
+  if (channels != 4) {
+    std::cerr << "Unexpected number of channels (fpng)" << std::endl;
+    return {};
+  }
+  
+  CImg result(width, height, 1, channels);
+  for (unsigned i = 0; i < data.size(); i += 4) {
+    unsigned x = (i / 4) % width, y = (i / 4) / width;
+    result(x, y, 0, 0) = data[i];
+    result(x, y, 0, 1) = data[i + 1];
+    result(x, y, 0, 2) = data[i + 2];
+    result(x, y, 0, 3) = data[i + 3];
+  }
+  return result;
+}
+
 void save_png(const CImg& img, const char* const filename) {
   // Convert image to have interleaved channels rather than CImg's separate channels
   auto img_data = std::make_unique<std::uint8_t[]>(img.size());
+  std::cout << "BEFORE" << std::endl;
   cimg_forXYC(img, x, y, c) {
     img_data[y * img.width() * img.spectrum() + x * img.spectrum() + c] = img(x, y, c);
   }
+  std::cout << "BEFORE 2" << std::endl;
 
   // Save the image
   if (img.spectrum() == 3 || img.spectrum() == 4) {
@@ -78,4 +104,6 @@ void save_png(const CImg& img, const char* const filename) {
   else {
     std::cerr << "Failed to encode \"" << filename << "\" (format not supported) format = " << img.spectrum() << std::endl;
   }
+  std::cout << "END" << std::endl;
+
 }

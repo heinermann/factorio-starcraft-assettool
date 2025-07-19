@@ -18,6 +18,7 @@
 #include "convert_lit.h"
 #include "image_predefs.h"
 #include "sound_predefs.h"
+#include "cimg.h"
 
 void create_output_dirs() {
   constexpr const char* const out_dirs[] = {
@@ -46,6 +47,43 @@ void convert_graphic(Casc& casc, const imagedat_info_t& img_def) {
   if (casc.read_file(filename.data(), buffer)) {
     convert_anim(buffer, img_def, OUTPUT_PATH);
   }
+}
+
+void combine_minerals() {
+  CImg minerals_raw[3] = {
+    load_png("graphics/hd/main_347_diffuse.png"),
+    load_png("graphics/hd/main_349_diffuse.png"),
+    load_png("graphics/hd/main_351_diffuse.png"),
+  };
+  CImg minerals_raw_emissive[3] = {
+    load_png("graphics/hd/main_347_emissive.png"),
+    load_png("graphics/hd/main_349_emissive.png"),
+    load_png("graphics/hd/main_351_emissive.png"),
+  };
+  
+  int max_width = 0, max_height = 0;
+  for (int i = 0; i < 3; i++) {
+    max_width = std::max(max_width, minerals_raw[i].width());
+    max_height = std::max(max_height, minerals_raw[i].height());
+  }
+
+  CImg new_minerals_diffuse(max_width * 3, max_height, 1, 4, 0);
+  CImg new_minerals_emissive(max_width * 3, max_height, 1, 4, 0);
+  for (int i = 0; i < 3; i++) {
+    int wid = minerals_raw[i].width();
+    int hgt = minerals_raw[i].height() / 4;
+    
+    for (int f = 0; f < 4; f++) {
+      int dstx = (max_width - wid) / 2 + i * max_width;
+      int dsty = ((max_height / 4) - hgt) / 2 + f * (max_height / 4);
+      
+      draw_image(new_minerals_diffuse, dstx, dsty, minerals_raw[i], 0, f * hgt, wid, hgt);
+      draw_image(new_minerals_emissive, dstx, dsty, minerals_raw_emissive[i], 0, f * hgt, wid, hgt);
+    }
+  }
+
+  save_png(new_minerals_diffuse, "graphics/minerals_combined_diffuse.png");
+  save_png(new_minerals_emissive, "graphics/minerals_combined_emissive.png");
 }
 
 void convert_graphics(Casc& casc) {
@@ -199,6 +237,8 @@ int main(int argc, const char** argv) {
   convert_graphics(casc);
   extract_sounds(casc);
   extract_lighting(casc);
+
+  combine_minerals();
 
   return 0;
 }

@@ -13,3 +13,4 @@ void draw_image(CImg& dst, int dst_x, int dst_y, CImg& src, int src_x, int src_y
 void BGRAtoRGBA(CImg& img);
 void zero_out_transparent(CImg& img);
 void save_png(const CImg& img, const char* const filename);
+CImg load_png(const char* const filename);
