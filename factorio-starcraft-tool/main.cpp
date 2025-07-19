@@ -22,11 +22,9 @@
 void create_output_dirs() {
   constexpr const char* const out_dirs[] = {
     "graphics/hd",
-    "graphics/low",
     "sound",
     "locale",
     "graphics/tiles/hd",
-    "graphics/tiles/low",
     "graphics/icons",
     "graphics/cmdicons"
   };
@@ -36,32 +34,26 @@ void create_output_dirs() {
   }
 }
 
-constexpr const char* CASC_FILEPATHS[] = {
-  "HD2\\anim\\main_%03d.anim",
-  "anim\\main_%03d.anim"
-};
+constexpr const char* CASC_FILEPATH = "anim\\main_%03d.anim";
 
-const std::string OUTPUT_PATHS[] = {
-  "graphics/low",
-  "graphics/hd"
-};
+const std::string OUTPUT_PATH = "graphics/hd";
 
-void convert_graphic(Casc& casc, const imagedat_info_t& img_def, bool use_hires) {
+void convert_graphic(Casc& casc, const imagedat_info_t& img_def) {
   std::vector<std::uint8_t> buffer;
   std::array<char, 64> filename;
 
-  std::snprintf(filename.data(), filename.size(), CASC_FILEPATHS[use_hires], img_def.id);
+  std::snprintf(filename.data(), filename.size(), CASC_FILEPATH, img_def.id);
   if (casc.read_file(filename.data(), buffer)) {
-    convert_anim(buffer, img_def, OUTPUT_PATHS[use_hires], !use_hires);
+    convert_anim(buffer, img_def, OUTPUT_PATH);
   }
 }
 
-void convert_graphics(Casc& casc, bool use_hires) {
-  ProgressBar progress(use_hires ? "Hi-Res Graphics" : "Lo-Res Graphics", unsigned(image_predefs.size()));
+void convert_graphics(Casc& casc) {
+  ProgressBar progress("Hi-Res Graphics", unsigned(image_predefs.size()));
   Stopwatch stopwatch = Stopwatch::create();
 
   // Prep warp texture for Protoss structures
-  convert_graphic(casc, WARP_TEXTURE, use_hires);
+  convert_graphic(casc, WARP_TEXTURE);
 
   size_t range_size = image_predefs.size() / std::thread::hardware_concurrency();
   std::vector<std::vector<imagedat_info_t>> data;
@@ -72,7 +64,7 @@ void convert_graphics(Casc& casc, bool use_hires) {
 
   std::for_each(std::execution::par_unseq, data.cbegin(), data.cend(), [&](const std::vector<imagedat_info_t>& img_defs) {
     for (const imagedat_info_t& img_def : img_defs) {
-      convert_graphic(casc, img_def, use_hires);
+      convert_graphic(casc, img_def);
       progress.inc_show_progress();
     }
   });
@@ -107,9 +99,9 @@ void extract_sounds(Casc& casc) {
   std::cerr << "\nCompleted in " << stopwatch.milliseconds() << "ms" << std::endl;
 }
 
-void rip_creep_tiles(Casc& casc, bool use_hires) {
-  const char* filepath = use_hires ? "TileSet\\AshWorld.dds.vr4" : "HD2\\TileSet\\AshWorld.dds.vr4";
-  const std::string outputpath = use_hires ? "graphics/tiles/hd" : "graphics/tiles/low";
+void rip_creep_tiles(Casc& casc) {
+  const char* filepath = "TileSet\\AshWorld.dds.vr4";
+  const std::string outputpath = "graphics/tiles/hd";
 
   std::vector<std::uint8_t> buffer;
   if (casc.read_file(filepath, buffer)) {
@@ -147,13 +139,10 @@ void rip_cmdicons(Casc& casc) {
 }
 
 void extract_tiles(Casc& casc) {
-  ProgressBar progress("Tiles and Icons", 4);
+  ProgressBar progress("Tiles and Icons", 3);
   Stopwatch stopwatch = Stopwatch::create();
 
-  rip_creep_tiles(casc, false);
-  progress.inc_show_progress();
-
-  rip_creep_tiles(casc, true);
+  rip_creep_tiles(casc);
   progress.inc_show_progress();
 
   rip_icons(casc);
@@ -207,8 +196,7 @@ int main(int argc, const char** argv) {
   // Convert to Factorio
   create_output_dirs();
   extract_tiles(casc);
-  convert_graphics(casc, false);
-  convert_graphics(casc, true);
+  convert_graphics(casc);
   extract_sounds(casc);
   extract_lighting(casc);
 

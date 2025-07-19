@@ -296,15 +296,12 @@ std::unordered_map<int, std::vector<std::function<decltype(frames_convert_unproc
 using anymap = std::map<std::string, std::any>;
 using anyvector = std::vector<std::any>;
 
-std::promise<CImgList> warp_texture_promise[2];
-std::shared_future<CImgList> warp_texture_future[2] = {
-  warp_texture_promise[0].get_future(),
-  warp_texture_promise[1].get_future()
-};
+std::promise<CImgList> warp_texture_promise;
+std::shared_future<CImgList> warp_texture_future = warp_texture_promise.get_future();
 
-void create_warp_anim(const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets, bool is_low) {
+void create_warp_anim(const CImgList& frames, const supplement_info_t& info, std::unordered_map<std::string, CImg>& output_sheets) {
   CImg target = frames(0);
-  CImgList warp_texture_frames = warp_texture_future[is_low].get();
+  CImgList warp_texture_frames = warp_texture_future.get();
 
   unsigned expected_frame_count = warp_texture_frames.size() + 16;
   CImgList warp_anim(expected_frame_count, target.width(), target.height(), 1, 4);
@@ -450,7 +447,7 @@ void process_images_to_output(const std::string& name, std::map<std::string, CIm
   }
 }
 
-std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imagedat_info_t& img_info, const supplement_info_t& anim_info, bool is_low) {
+std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imagedat_info_t& img_info, const supplement_info_t& anim_info) {
   std::map<std::string, CImgList> transition_lists;
   std::unordered_map<std::string, CImg> output_sheets;
 
@@ -476,14 +473,14 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
 
   // Warp texture overlay
   if (img_info.id == 210) {
-    warp_texture_promise[is_low].set_value(transition_lists["diffuse"]);
+    warp_texture_promise.set_value(transition_lists["diffuse"]);
     return {};
   }
 
   // Generate a warp overlay if the image needs one
   // Note: This must be mutually exclusive with gfx turns...
   if (img_info.warp_overlay) {
-    create_warp_anim(transition_lists["diffuse"], anim_info, output_sheets, is_low);
+    create_warp_anim(transition_lists["diffuse"], anim_info, output_sheets);
   }
 
   if (!img_info.gfx_turns_frames && transition_lists.contains("normal") && transition_lists.contains("ao_depth")) {
@@ -540,16 +537,12 @@ std::unordered_map<std::string, CImg> convert_to_output(anim_t& anim, const imag
   return output_sheets;
 }
 
-void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_info_t& img_info, const std::string& out_dir, bool is_low) {
+void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_info_t& img_info, const std::string& out_dir) {
   anim_t anim = loadAnim(anim_data);
-  if (is_low) {
-    anim.make_lowdef();
-  }
-
   supplement_info_t anim_info = generate_supplemental_info(anim, img_info, 0, unsigned(anim.framedata.size()) - 1);
 
   // Convert to lists
-  std::unordered_map<std::string, CImg> output_sheets = convert_to_output(anim, img_info, anim_info, is_low);
+  std::unordered_map<std::string, CImg> output_sheets = convert_to_output(anim, img_info, anim_info);
 
   // Write output PNGs
   std::array<char, 128> filename;
@@ -568,10 +561,9 @@ void convert_anim(const std::vector<std::uint8_t>& anim_data, const imagedat_inf
     {"filename", std::string(filename.data())},
     {"size", anyvector{ anim_info.dst_frame_width, anim_info.dst_frame_height }},
     {"frame_count", anim_info.framecount},
-    {"line_length", anim_info.dst_cells_per_row}
+    {"line_length", anim_info.dst_cells_per_row},
+    {"scale", 0.5}
   };
-
-  if (!is_low) lua_data["scale"] = 0.5;
 
   std::snprintf(filename.data(), filename.size(), "%s/main_%03d.lua", out_dir.c_str(), img_info.id);
   write_lua_file(filename.data(), lua_data);

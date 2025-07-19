@@ -55,15 +55,6 @@ struct frame_t {
   std::uint16_t height;
   std::uint16_t unk1; // 0?
   std::uint16_t unk2; // 0?
-
-  void halve() {
-    x /= 2;
-    y /= 2;
-    xoffs /= 2;
-    yoffs /= 2;
-    width /= 2;
-    height /= 2;
-  }
 };
 
 
@@ -79,14 +70,6 @@ struct anim_t {
   std::vector<std::pair<std::string, cimg_library::CImg<std::uint8_t>>> sheets;
 
   std::vector<frame_t> framedata;
-
-  void make_lowdef() {
-    for (frame_t& frame : framedata) {
-      frame.halve();
-    }
-    width /= 2;
-    height /= 2;
-  }
 };
 
 //anim_t loadAnim(std::istream& is);
