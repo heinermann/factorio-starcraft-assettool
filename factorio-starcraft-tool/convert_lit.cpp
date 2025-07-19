@@ -26,14 +26,14 @@ struct lit_entry_t {
 void convert_litfile(const std::vector<std::uint8_t>& data) {
   const lit_header_t* header = reinterpret_cast<const lit_header_t*>(data.data());
 
-  std::ofstream outfile("main.lit.yaml");
+  std::ofstream outfile("main.lit.lua");
 
+  outfile << "return {\n";
   for (int i = 0; i < header->count; ++i) {
     const lit_entry_t* entry = (const lit_entry_t*)&data.data()[header->offsets[i]];
 
     std::ostringstream entrystr;
-
-    entrystr << i << ":\n";
+    entrystr << "  [" << i << "] = {\n";
 
     bool hasAny = false;
     for (int frameno = 0; frameno < entry->framecount; ++frameno) {
@@ -41,15 +41,21 @@ void convert_litfile(const std::vector<std::uint8_t>& data) {
 
       if (frame.color == 0 && frame.intensity == 0 && frame.radius == 0) continue;
 
-      entrystr << "  " << frameno << ":\n";
-      entrystr << "    pos: [" << frame.x << ", " << frame.y << "]\n";
-      entrystr << "    color: [" << (frame.color & 0xFF) << ", " << (frame.color >> 8 & 0xFF) << ", " << (frame.color >> 16 & 0xFF) << ", " << (frame.color >> 24 & 0xFF) << "]\n";
-      entrystr << "    intensity: " << frame.intensity << "\n";
-      entrystr << "    radius: " << frame.radius << "\n";
+      entrystr << "    [" << frameno << "] = {\n";
+      entrystr << "      shift = { " << frame.x << ", " << frame.y << " },\n";
+      entrystr << "      color = { " << (frame.color & 0xFF) << ", " << (frame.color >> 8 & 0xFF) << ", " << (frame.color >> 16 & 0xFF) << ", " << (frame.color >> 24 & 0xFF) << " },\n";
+      entrystr << "      intensity = " << frame.intensity << " / 120,\n";
+      entrystr << "      radius = " << frame.radius << " / 16 * 2,\n";
+      entrystr << "    },\n";
+
       hasAny = true;
     }
+
+    entrystr << "  },\n";
+
     if (hasAny) {
       outfile << entrystr.str();
     }
   }
+  outfile << "}\n";
 }
